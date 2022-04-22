@@ -9,28 +9,48 @@ namespace WordFilter.Entities
     public class Analyzer : INotifyPropertyChanged
     {
         private string path { get; set; }
+        private List<string> FilesToAnalysis { get; set; } = new List<string>();
+        private int numberOfFilesToAnalysis;
+        private int numberOfCurrentProgress;
 
-        private List<string> FilesToAnalysis = new List<string>();
+   
+        public int NumberOfFilesToAnalysis
+        {
+            get { return numberOfFilesToAnalysis; }
+            set
+            {
+                numberOfFilesToAnalysis = value;
+                OnPropertyChanged();
+            }
 
-        public int NumberOfFilesToAnalysis { get; set; } = 0;
-        public int NumberOfCurrentProgress { get; set; } = 0;
+        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        public int NumberOfCurrentProgress
+        {
+            get { return numberOfCurrentProgress; }
+            set
+            {
+                numberOfCurrentProgress = value;
+                OnPropertyChanged();
+            }
+        }
         public string RootName {
             get { return Path.GetDirectoryName(path); }
 
         }
 
-
-
-
+        public List<string> BannedStrings { get; set; }
 
         public Analyzer(string path)
         {
             if (Directory.Exists(path))
+            {
                 this.path = path;
-            else throw new ArgumentOutOfRangeException("path");
+                NumberOfFilesToAnalysis = 0;
+                NumberOfCurrentProgress = 0;
+            }
+            else
+                throw new ArgumentOutOfRangeException("path");
         }
 
 
@@ -72,6 +92,7 @@ namespace WordFilter.Entities
 
 
 
+
         }
 
 
@@ -80,6 +101,8 @@ namespace WordFilter.Entities
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
     }
 }
