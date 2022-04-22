@@ -10,10 +10,13 @@ namespace WordFilter.Entities
     {
         private string path { get; set; }
         private List<string> FilesToAnalysis { get; set; } = new List<string>();
-        private int numberOfFilesToAnalysis;
-        private int numberOfCurrentProgress;
 
-   
+        private int numberOfFilesToAnalysis;
+
+        private int numberOfCurrentProgress;
+        public List<string> BannedStrings { get; set; }
+
+
         public int NumberOfFilesToAnalysis
         {
             get { return numberOfFilesToAnalysis; }
@@ -34,12 +37,12 @@ namespace WordFilter.Entities
                 OnPropertyChanged();
             }
         }
+
         public string RootName {
             get { return Path.GetDirectoryName(path); }
 
         }
 
-        public List<string> BannedStrings { get; set; }
 
         public Analyzer(string path)
         {
@@ -95,6 +98,11 @@ namespace WordFilter.Entities
 
         }
 
+        public Analyzer SetBannedStrings(IEnumerable<string> BannedStrings)
+        {
+            this.BannedStrings = (List<string>)BannedStrings;
+            return this;
+        }
 
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
