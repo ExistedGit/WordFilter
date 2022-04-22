@@ -10,12 +10,10 @@ namespace WordFilter.Entities
     {
         private string path { get; set; }
         private List<string> FilesToAnalysis { get; set; } = new List<string>();
-
         private int numberOfFilesToAnalysis;
-
         private int numberOfCurrentProgress;
         public List<string> BannedStrings { get; set; }
-
+        public List<FileReport> fileReports { get; set; }
 
         public int NumberOfFilesToAnalysis
         {

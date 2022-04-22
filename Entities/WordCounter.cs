@@ -12,12 +12,12 @@ namespace WordFilter.Entities
     {
         [XmlAttribute]
         public string Word { get; set; }
+
         [XmlAttribute]
         public int Occurences { get; set; }
-        public WordCounter()
-        {
 
-        }
+        public WordCounter() { }
+
         public WordCounter(string word, int occurences)
         {
             Word = word;
