@@ -64,6 +64,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Entities\Analyzer.cs" />
+    <Compile Include="Entities\FileReport.cs" />
+    <Compile Include="Entities\WordCounter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
