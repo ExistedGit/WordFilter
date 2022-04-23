@@ -9,27 +9,33 @@ namespace WordFilter.Entities
     [Serializable]
     public class FileReport
     {
-        string fullPath = null;
-        string fileName = null;
 
-        string FileName { get => fileName; }
-        [XmlAttribute]
-        public string FullPath { get => fullPath; }
+        [XmlAttribute("Path")]
+        public string FullPath { get; private set; }
+
+        [XmlIgnore()]
+        public string Name 
+        { 
+            get => new FileInfo(FullPath).Name;
+        }
 
         public readonly Dictionary<string, int> WordOccurences = new Dictionary<string, int>();
         
-        [XmlElement("WordOccurence")]
-        public WordCounter[] WordOccurenceAttribute { get => WordOccurences.Select(pair => new WordCounter(pair.Key, pair.Value)).ToArray(); }    
+        [XmlElement("WordOccurences")]
+        public WordCounter[] WordOccurenceAttribute
+        { 
+            get => WordOccurences.Select(pair => new WordCounter(pair.Key, pair.Value)).ToArray();
+        }    
         
-        public FileReport() {
-        }
+
+        public FileReport() { }
+
         public FileReport(string path)
         {
             if (!File.Exists(path))
                 throw new ArgumentOutOfRangeException("path");
 
-            fullPath = path;
-            fileName = new FileInfo(path).Name;
+            this.FullPath = path;
         }
 
         public static Dictionary<string, int> Merge(Dictionary<string, int> first, Dictionary<string, int> second)

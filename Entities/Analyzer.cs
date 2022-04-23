@@ -12,9 +12,9 @@ namespace WordFilter.Entities
         private List<string> FilesToAnalysis { get; set; } = new List<string>();
         private int numberOfFilesToAnalysis;
         private int numberOfCurrentProgress;
-        public List<string> BannedStrings { get; set; }
-        public List<FileReport> fileReports { get; set; }
 
+        public List<string> BannedStrings { get; set; }
+        public List<FileReport> FileReports { get; set; }
         public int NumberOfFilesToAnalysis
         {
             get { return numberOfFilesToAnalysis; }
@@ -25,7 +25,6 @@ namespace WordFilter.Entities
             }
 
         }
-
         public int NumberOfCurrentProgress
         {
             get { return numberOfCurrentProgress; }
@@ -35,23 +34,21 @@ namespace WordFilter.Entities
                 OnPropertyChanged();
             }
         }
-
         public string RootName {
             get { return Path.GetDirectoryName(path); }
 
         }
 
-
         public Analyzer(string path)
         {
-            if (Directory.Exists(path))
-            {
-                this.path = path;
-                NumberOfFilesToAnalysis = 0;
-                NumberOfCurrentProgress = 0;
-            }
-            else
+            if (!Directory.Exists(path))
                 throw new ArgumentOutOfRangeException("path");
+
+            this.path = path;
+            NumberOfFilesToAnalysis = 0;
+            NumberOfCurrentProgress = 0;
+           
+                
         }
 
 
