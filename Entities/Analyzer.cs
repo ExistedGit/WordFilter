@@ -2,41 +2,46 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace WordFilter.Entities
 {
     public class Analyzer : INotifyPropertyChanged
     {
         private string path { get; set; }
-        private List<string> FilesToAnalysis { get; set; } = new List<string>();
-        private int numberOfFilesToAnalysis;
-        private int numberOfCurrentProgress;
-
+        private List<string> Files { get; set; } = new List<string>();
+        private int fileCount;
+        private int analyzedFileCount;
+        
+        
         public List<string> BannedStrings { get; set; }
         public List<FileReport> FileReports { get; set; }
-        public int NumberOfFilesToAnalysis
+        
+        private Thread thread = null;
+
+        public int FileCount
         {
-            get { return numberOfFilesToAnalysis; }
+            get => fileCount;
             set
             {
-                numberOfFilesToAnalysis = value;
+                fileCount = value;
                 OnPropertyChanged();
             }
 
         }
-        public int NumberOfCurrentProgress
+        public int AnalyzedFileCount
         {
-            get { return numberOfCurrentProgress; }
+            get => analyzedFileCount; 
             set
             {
-                numberOfCurrentProgress = value;
+                analyzedFileCount = value;
                 OnPropertyChanged();
             }
         }
         public string RootName {
-            get { return Path.GetDirectoryName(path); }
-
+            get => Path.GetDirectoryName(path); 
         }
 
         public Analyzer(string path)
@@ -45,15 +50,53 @@ namespace WordFilter.Entities
                 throw new ArgumentOutOfRangeException("path");
 
             this.path = path;
-            NumberOfFilesToAnalysis = 0;
-            NumberOfCurrentProgress = 0;
-           
-                
+            FileCount = 0;
+            AnalyzedFileCount = 0;
+
         }
 
-
-        public void ReadAllTxtFiles(string dir = null) {
-
+        public enum AnalyzerState
+        {
+            RUNNING,
+            PAUSED,
+            STOPPED
+        }
+        public AnalyzerState State { get; private set; }
+        public bool StartReading()
+        {
+            if (State == AnalyzerState.RUNNING)
+                return false;
+            if (State == AnalyzerState.STOPPED)
+            {
+                thread = new Thread(ReadAllTxtFiles);
+                thread.IsBackground = true;
+                thread.Start();
+            }
+            else if (State == AnalyzerState.PAUSED)
+                thread.Resume();
+            State = AnalyzerState.RUNNING;
+            return true;
+        }
+        public bool PauseReading()
+        {
+            if (State != AnalyzerState.RUNNING)
+                return false;
+            thread.Suspend();
+            State = AnalyzerState.PAUSED;
+            return false; 
+        }
+        public bool StopReading()
+        {
+            if (State == AnalyzerState.STOPPED)
+                return false;
+            thread.Abort();
+            State = AnalyzerState.STOPPED;
+            return true;
+        }
+        private void ReadAllTxtFiles(object obj = null) 
+        {
+            string dir = obj as string;
+            
             if(dir == null)
                 dir = path;
 
@@ -77,7 +120,7 @@ namespace WordFilter.Entities
             foreach (var item in Directory.GetFiles(dir, "*.txt"))
             {
                 Console.WriteLine(item);
-                FilesToAnalysis.Add(item);
+                Files.Add(item);
             }
 
 
@@ -85,7 +128,7 @@ namespace WordFilter.Entities
 
         public void StartAnalysisFiles()
         {
-            NumberOfFilesToAnalysis = FilesToAnalysis.Count;
+            FileCount = Files.Count;
             //TODO
 
 
@@ -93,9 +136,9 @@ namespace WordFilter.Entities
 
         }
 
-        public Analyzer SetBannedStrings(IEnumerable<string> BannedStrings)
+        public Analyzer SetBannedStrings(IEnumerable<string> strings)
         {
-            this.BannedStrings = (List<string>)BannedStrings;
+            BannedStrings = strings.ToList();
             return this;
         }
 
@@ -106,6 +149,5 @@ namespace WordFilter.Entities
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
     }
 }
