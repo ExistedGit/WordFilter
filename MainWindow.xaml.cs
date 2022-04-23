@@ -5,13 +5,13 @@ namespace WordFilter
 
     public partial class MainWindow : Window
     {
-        public int NumberOfFilesToAnalysis = 0;
-        public int NumberOfCurrentProgress = 0;
-
+        public int NumberOfFilesToAnalysis { get; set; } = 0;
+        public int NumberOfCurrentProgress { get; set; } = 0;
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
     }
 }

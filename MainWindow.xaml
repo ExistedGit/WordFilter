@@ -3,10 +3,105 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WordFilter"
+        xmlns:local="clr-namespace:WordFilter" xmlns:entities="clr-namespace:WordFilter.Entities" d:DataContext="{d:DesignInstance Type=entities:Analyzer}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="557" Width="934">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="300"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0">
+
+            <MenuItem Header="File" Height="30" Width="50" >
+                <MenuItem Header="Save as" Background="#242f3d" Foreground="#b0b0b0"/>
+                <MenuItem Header="Open configuration file" Background="#242f3d" Foreground="#b0b0b0"/>
+            </MenuItem>
+
+        </Menu>
+
+        <Grid Grid.Row="1"
+              Background="#202b36">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+
+                <TextBlock Text="Banned strings"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           FontSize="25"
+                           Foreground="#b0b0b0"/>
+                <ListBox Grid.Row="1" 
+                         Background="#182533"
+                         BorderThickness="0"/>
+            </Grid>
+            
+
+        </Grid>
+
+        <ListBox Grid.Row="2" Background="#17212b" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Grid Grid.Row="3" Background="#202b36">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+            </Grid.RowDefinitions>
+
+
+            <TextBlock Grid.Row="0"
+                       Text="Our progress"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontSize="18"
+                       Foreground="#b0b0b0"/>
+            
+            <ProgressBar Grid.Row="1" 
+                         Margin="10, 0"
+                         Background="#202b36"
+                         Maximum="100"
+                         Value="5"
+                          Foreground="#768c9e"/>
+            
+            <Grid Grid.Row="2" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding NumberOfCurrentProgress, UpdateSourceTrigger=PropertyChanged}"
+                           Grid.Column="0"
+                           Foreground="#b0b0b0"/>
+                
+                <TextBlock Text="/"
+                            Grid.Column="1"
+                           Foreground="#b0b0b0"/>
+
+                <TextBlock Text="{Binding NumberOfCurrentProgress, UpdateSourceTrigger=PropertyChanged}"
+                           Grid.Column="2"
+                           Foreground="#b0b0b0"/>
+            </Grid>
+        </Grid>
+        
         
     </Grid>
 </Window>
