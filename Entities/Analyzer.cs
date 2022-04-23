@@ -10,17 +10,22 @@ namespace WordFilter.Entities
 {
     public class Analyzer : INotifyPropertyChanged
     {
+        //TODO I think this enum must have more fields to display when read files and when analysing files
+        public enum AnalyzerState
+        {
+            Running,
+            Paused,
+            Stoped
+        }
+
         private string path { get; set; }
         private List<string> Files { get; set; } = new List<string>();
         private int fileCount;
         private int analyzedFileCount;
-        
-        
+
         public List<string> BannedStrings { get; set; }
         public List<FileReport> FileReports { get; set; }
-        
-        private Thread thread = null;
-
+        private Thread thread;
         public int FileCount
         {
             get => fileCount;
@@ -43,6 +48,8 @@ namespace WordFilter.Entities
         public string RootName {
             get => Path.GetDirectoryName(path); 
         }
+        public AnalyzerState State { get; private set; }
+
 
         public Analyzer(string path)
         {
@@ -55,73 +62,82 @@ namespace WordFilter.Entities
 
         }
 
-        public enum AnalyzerState
-        {
-            RUNNING,
-            PAUSED,
-            STOPPED
-        }
-        public AnalyzerState State { get; private set; }
+
         public bool StartReading()
         {
-            if (State == AnalyzerState.RUNNING)
+            if (State == AnalyzerState.Running)
                 return false;
-            if (State == AnalyzerState.STOPPED)
+
+            if (State == AnalyzerState.Stoped)
             {
                 thread = new Thread(ReadAllTxtFiles);
                 thread.IsBackground = true;
                 thread.Start();
             }
-            else if (State == AnalyzerState.PAUSED)
-                thread.Resume();
-            State = AnalyzerState.RUNNING;
+            else
+            {
+                if(State == AnalyzerState.Paused)
+                    thread.Resume();
+            }
+              
+            State = AnalyzerState.Running;
             return true;
         }
+
         public bool PauseReading()
         {
-            if (State != AnalyzerState.RUNNING)
+            if (State != AnalyzerState.Running)
                 return false;
+
             thread.Suspend();
-            State = AnalyzerState.PAUSED;
+
+            State = AnalyzerState.Paused;
             return false; 
         }
+
         public bool StopReading()
         {
-            if (State == AnalyzerState.STOPPED)
+            if (State == AnalyzerState.Stoped)
                 return false;
+
             thread.Abort();
-            State = AnalyzerState.STOPPED;
+            State = AnalyzerState.Stoped;
             return true;
         }
+
         private void ReadAllTxtFiles(object obj = null) 
         {
-            string dir = obj as string;
-            
-            if(dir == null)
-                dir = path;
-
-            string[] Catalogs = null;
-            try
+            if(obj is string)
             {
-                Catalogs = Directory.GetDirectories(dir);
-            }
-            catch (Exception)  {
-                return;
-            }
+                string dir = (string)obj;
+
+                if (dir == null)
+                    dir = path;
+
+                string[] Catalogs = null;
+                try
+                {
+                    Catalogs = Directory.GetDirectories(dir);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
 
 
-            foreach (var catalog in Catalogs)
-            {
+                foreach (var catalog in Catalogs)
+                {
+                    if (Directory.Exists(catalog))
+                        ReadAllTxtFiles(catalog);
+                }
 
-                if (Directory.Exists(catalog))
-                    ReadAllTxtFiles(catalog);
+                foreach (var item in Directory.GetFiles(dir, "*.txt"))
+                {
+                    Console.WriteLine(item);
+                    Files.Add(item);
+                }
             }
-
-            foreach (var item in Directory.GetFiles(dir, "*.txt"))
-            {
-                Console.WriteLine(item);
-                Files.Add(item);
-            }
+          
 
 
         }
@@ -130,9 +146,6 @@ namespace WordFilter.Entities
         {
             FileCount = Files.Count;
             //TODO
-
-
-
 
         }
 
@@ -143,7 +156,7 @@ namespace WordFilter.Entities
         }
 
 
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        private void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
