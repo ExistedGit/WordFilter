@@ -9,6 +9,8 @@ namespace WordFilter
     {
         public int TotalFileCount { get; set; } = 0;
         public int AnalyzedFileCount { get; set; } =0;
+
+
         public List<Analyzer> Analyzers { get; set; }
 
         public MainWindow()

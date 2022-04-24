@@ -140,7 +140,7 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding NumberOfCurrentProgress, UpdateSourceTrigger=PropertyChanged}"
+                <TextBlock Text="{Binding AnalyzedFileCount, UpdateSourceTrigger=PropertyChanged}"
                            Grid.Column="0"
                            Foreground="#b0b0b0"/>
                 
@@ -148,7 +148,7 @@
                             Grid.Column="1"
                            Foreground="#b0b0b0"/>
 
-                <TextBlock Text="{Binding NumberOfCurrentProgress, UpdateSourceTrigger=PropertyChanged}"
+                <TextBlock Text="{Binding TotalFileCount, UpdateSourceTrigger=PropertyChanged}"
                            Grid.Column="2"
                            Foreground="#b0b0b0"/>
             </Grid>
