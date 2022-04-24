@@ -105,6 +105,7 @@ namespace WordFilter.Entities
             return true;
         }
 
+
         private void ReadAllTxtFiles(object obj = null) 
         {
             if(obj is string)
