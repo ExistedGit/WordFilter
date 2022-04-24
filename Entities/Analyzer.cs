@@ -48,13 +48,14 @@ namespace WordFilter.Entities
             get => Path.GetDirectoryName(path); 
         }
 
+        // *что-то на ломаном английском*
         public enum AnalyzerState
         {
-            RUNNING,
-            PAUSED,
-            STOPPED
+            Running,
+            Paused,
+            Stopped
         }
-        public AnalyzerState State { get; private set; } = AnalyzerState.STOPPED;
+        public AnalyzerState State { get; private set; } = AnalyzerState.Stopped;
         public Analyzer(string path)
         {
             if (!Directory.Exists(path))
@@ -67,34 +68,34 @@ namespace WordFilter.Entities
         
         public bool Start()
         {
-            if (State == AnalyzerState.RUNNING)
+            if (State == AnalyzerState.Running)
                 return false;
-            if (State == AnalyzerState.STOPPED)
+            if (State == AnalyzerState.Stopped)
             {
                 thread = new Thread(new ThreadStart(()=> AnalyzeDirectory()));
                 thread.IsBackground = true;
                 thread.Start();
             }
-            else if (State == AnalyzerState.PAUSED)
+            else if (State == AnalyzerState.Paused)
                 thread.Resume();
-            State = AnalyzerState.RUNNING;
+            State = AnalyzerState.Running;
             return true;
         }
         public bool Pause()
         {
-            if (State != AnalyzerState.RUNNING)
+            if (State != AnalyzerState.Running)
                 return false;
             thread.Suspend();
-            State = AnalyzerState.PAUSED;
+            State = AnalyzerState.Paused;
             return false; 
         }
         public bool Stop()
         {
-            if (State == AnalyzerState.STOPPED)
+            if (State == AnalyzerState.Stopped)
                 return false;
             thread.Abort();
 
-            State = AnalyzerState.STOPPED;
+            State = AnalyzerState.Stopped;
             return true;
         }
         private void AnalyzeDirectory(object obj = null, int level = 0) 
