@@ -11,7 +11,7 @@ namespace WordFilter
         public int AnalyzedFileCount { get; set; } =0;
 
 
-        public List<Analyzer> Analyzers { get; set; }
+        public List<Analyzer> Analyzers { get; set; } = new List<Analyzer>();
 
         public MainWindow()
         {

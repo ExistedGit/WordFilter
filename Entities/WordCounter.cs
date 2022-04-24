@@ -7,6 +7,10 @@ using System.Xml.Serialization;
 
 namespace WordFilter.Entities
 {
+    /// <summary>
+    /// Вспомогательный класс для XML-сериализации словаря <c>FileReport</c>. 
+    /// Каждый объект представляет из себя пару слово-количество(string, int).
+    /// </summary>
     [Serializable]
     public class WordCounter
     {
@@ -16,6 +20,9 @@ namespace WordFilter.Entities
         [XmlAttribute]
         public int Occurences { get; set; }
 
+        /// <summary>
+        /// Для XML-сериализации
+        /// </summary>
         public WordCounter() { }
 
         public WordCounter(string word, int occurences)

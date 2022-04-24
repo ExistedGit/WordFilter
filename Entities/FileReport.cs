@@ -6,6 +6,9 @@ using System.Xml.Serialization;
 
 namespace WordFilter.Entities
 {
+    /// <summary>
+    /// Класс, содержащий словарь найденных в файле слов к количеству этих слов в файле. При этом данные в объекте должны заполняться вручную.
+    /// </summary>
     [Serializable]
     public class FileReport
     {
@@ -27,17 +30,24 @@ namespace WordFilter.Entities
             get => WordOccurences.Select(pair => new WordCounter(pair.Key, pair.Value)).ToArray();
         }    
         
-
+        /// <summary>
+        /// Для XML-сериализации.
+        /// </summary>
         public FileReport() { }
 
         public FileReport(string path)
         {
             if (!File.Exists(path))
                 throw new ArgumentOutOfRangeException("path");
-
-            this.FullPath = path;
+            FullPath = path;
         }
 
+        /// <summary>
+        /// Соединяет два словаря <c>FileReport</c> в один, суммируя количество у слов, найденных в обоих файлах.
+        /// </summary>
+        /// <param name="first">Первый словарь</param>
+        /// <param name="second">Второй словарь</param>
+        /// <returns>Соединённый словарь</returns>
         public static Dictionary<string, int> Merge(Dictionary<string, int> first, Dictionary<string, int> second)
         {
             Dictionary<string, int> result = new Dictionary<string, int>();

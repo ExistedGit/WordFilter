@@ -11,26 +11,33 @@ namespace WordFilter.Entities
 {
     public class Analyzer : INotifyPropertyChanged
     {
+
         private string path { get; set; }
-        private int fileCount;
+        private int totalFileCount;
         private int analyzedFileCount;
-        
-        
+
+        /// <summary>
+        /// Список запрещённых строк
+        /// </summary>
         public List<string> BannedStrings { get; private set; }
-        private List<FileReport> fileReports = new List<FileReport>();
-
-        public FileReport[] FileReports { get => fileReports.ToArray(); }
         
-
+        private List<FileReport> fileReports = new List<FileReport>();
+        /// <summary>
+        /// Отчёты о проанализированных файлах(какие слова и сколько их найдено)
+        /// </summary>
+        public FileReport[] FileReports { get => fileReports.ToArray(); }
+        /// <summary>
+        /// Главный поток, в котором выполняется анализ
+        /// </summary>
         private Thread thread = null;
         
-
-        public int FileCount
+        
+        public int TotalFileCount
         {
-            get => fileCount;
+            get => totalFileCount;
             set
             {
-                fileCount = value;
+                totalFileCount = value;
                 OnPropertyChanged();
             }
 
@@ -62,10 +69,13 @@ namespace WordFilter.Entities
                 throw new ArgumentOutOfRangeException("path");
 
             this.path = path;
-            FileCount = 0;
+            TotalFileCount = 0;
             AnalyzedFileCount = 0;
         }
-        
+        /// <summary>
+        /// Начать работу анализатора
+        /// </summary>
+        /// <returns>Удалось ли выполнить метод</returns>
         public bool Start()
         {
             if (State == AnalyzerState.Running)
@@ -81,14 +91,22 @@ namespace WordFilter.Entities
             State = AnalyzerState.Running;
             return true;
         }
+        /// <summary>
+        /// Приостановить работу анализатора
+        /// </summary>
+        /// <returns>Удалось ли выполнить метод</returns>
         public bool Pause()
         {
             if (State != AnalyzerState.Running)
                 return false;
             thread.Suspend();
             State = AnalyzerState.Paused;
-            return false; 
+            return false;
         }
+        /// <summary>
+        /// Полностью остановить работу анализатора
+        /// </summary>
+        /// <returns>Удалось ли выполнить метод</returns>
         public bool Stop()
         {
             if (State == AnalyzerState.Stopped)
@@ -114,7 +132,7 @@ namespace WordFilter.Entities
                 return;
             }
             string[] files = Directory.GetFiles(dir, "*.txt");
-            FileCount += files.Length;
+            TotalFileCount += files.Length;
 
 
             foreach (var catalog in Catalogs)
