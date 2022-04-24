@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace WordFilter.Entities
@@ -11,15 +12,18 @@ namespace WordFilter.Entities
     public class Analyzer : INotifyPropertyChanged
     {
         private string path { get; set; }
-        private List<string> Files { get; set; } = new List<string>();
         private int fileCount;
         private int analyzedFileCount;
         
         
-        public List<string> BannedStrings { get; set; }
-        public List<FileReport> FileReports { get; set; }
+        public List<string> BannedStrings { get; private set; }
+        private List<FileReport> fileReports = new List<FileReport>();
+
+        public FileReport[] FileReports { get => fileReports.ToArray(); }
         
+
         private Thread thread = null;
+        
 
         public int FileCount
         {
@@ -44,6 +48,13 @@ namespace WordFilter.Entities
             get => Path.GetDirectoryName(path); 
         }
 
+        public enum AnalyzerState
+        {
+            RUNNING,
+            PAUSED,
+            STOPPED
+        }
+        public AnalyzerState State { get; private set; } = AnalyzerState.STOPPED;
         public Analyzer(string path)
         {
             if (!Directory.Exists(path))
@@ -52,23 +63,15 @@ namespace WordFilter.Entities
             this.path = path;
             FileCount = 0;
             AnalyzedFileCount = 0;
-
         }
-
-        public enum AnalyzerState
-        {
-            RUNNING,
-            PAUSED,
-            STOPPED
-        }
-        public AnalyzerState State { get; private set; }
-        public bool StartReading()
+        
+        public bool Start()
         {
             if (State == AnalyzerState.RUNNING)
                 return false;
             if (State == AnalyzerState.STOPPED)
             {
-                thread = new Thread(ReadAllTxtFiles);
+                thread = new Thread(new ThreadStart(()=> AnalyzeDirectory()));
                 thread.IsBackground = true;
                 thread.Start();
             }
@@ -77,7 +80,7 @@ namespace WordFilter.Entities
             State = AnalyzerState.RUNNING;
             return true;
         }
-        public bool PauseReading()
+        public bool Pause()
         {
             if (State != AnalyzerState.RUNNING)
                 return false;
@@ -85,15 +88,16 @@ namespace WordFilter.Entities
             State = AnalyzerState.PAUSED;
             return false; 
         }
-        public bool StopReading()
+        public bool Stop()
         {
             if (State == AnalyzerState.STOPPED)
                 return false;
             thread.Abort();
+
             State = AnalyzerState.STOPPED;
             return true;
         }
-        private void ReadAllTxtFiles(object obj = null) 
+        private void AnalyzeDirectory(object obj = null, int level = 0) 
         {
             string dir = obj as string;
             
@@ -108,32 +112,48 @@ namespace WordFilter.Entities
             catch (Exception)  {
                 return;
             }
+            string[] files = Directory.GetFiles(dir, "*.txt");
+            FileCount += files.Length;
 
 
             foreach (var catalog in Catalogs)
-            {
-
-                if (Directory.Exists(catalog))
-                    ReadAllTxtFiles(catalog);
+                if (Directory.Exists(catalog)) {
+                    if (level <= 2)
+                    {
+                        Thread subThread = new Thread(new ThreadStart(() => AnalyzeDirectory(catalog, level + 1)));
+                        subThread.IsBackground = true;
+                        subThread.Start();
+                    }
+                    else
+                        AnalyzeDirectory(catalog, level + 1);
             }
 
-            foreach (var item in Directory.GetFiles(dir, "*.txt"))
+            foreach (var item in files)
             {
-                Console.WriteLine(item);
-                Files.Add(item);
+                fileReports.Add(AnalyzeFile(item));
+                AnalyzedFileCount++;
             }
-
-
         }
 
-        public void StartAnalysisFiles()
+        private FileReport AnalyzeFile(string path)
         {
-            FileCount = Files.Count;
-            //TODO
+            FileReport result = new FileReport(path);
+            
+            foreach (var bannedString in BannedStrings)
+            {
+                using (StreamReader reader = new StreamReader(path)) {
 
+                    string text = reader.ReadToEnd();
+                    text= Regex.Replace(text, @"[\r\n]", " ");
+                    string[] source = text.Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-
-
+                    var matchQuery = from word in source
+                                     where word.Equals(bannedString, StringComparison.InvariantCultureIgnoreCase)
+                                     select word;
+                    result.WordOccurences[bannedString] = matchQuery.Count(); 
+                }
+            }
+            return result;
         }
 
         public Analyzer SetBannedStrings(IEnumerable<string> strings)
