@@ -130,7 +130,7 @@
                          Margin="10, 0"
                          Background="#202b36"
                          Maximum="100"
-                         Value="5"
+                         Value="0"
                           Foreground="#768c9e"/>
             
             <Grid Grid.Row="2" HorizontalAlignment="Center">
