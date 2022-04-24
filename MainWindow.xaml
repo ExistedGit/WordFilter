@@ -8,11 +8,41 @@
         Title="MainWindow" Height="557" Width="934">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
             <RowDefinition Height="300"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="80"></RowDefinition>
         </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Style.Setters>
+               
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="10"
+                                        BorderBrush="#b0b0b0"
+                                        BorderThickness="2"
+                                        x:Name="Border">
+                                    <ContentPresenter VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"/>
+                                </Border>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="#17212b"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+
+                    </Setter>
+                    <Setter Property="Foreground" Value="#b0b0b0"/>
+                </Style.Setters>
+            </Style>
+        </Grid.Resources>
+        
 
         <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0">
 
@@ -41,13 +71,35 @@
                 <TextBlock Text="Banned strings"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center"
-                           FontSize="25"
+                           FontSize="23"
                            Foreground="#b0b0b0"/>
                 <ListBox Grid.Row="1" 
                          Background="#182533"
                          BorderThickness="0"/>
             </Grid>
             
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <UniformGrid Grid.Row="1" Columns="3">
+                    <Button Margin="0, 5, 5, 5"
+                            Content="Start analysis"
+                            FontSize="20"/>
+                    
+                    <Button Margin="0, 5, 5, 5"
+                            Content="Stop analysis"
+                            FontSize="20"/>
+                    
+                    <Button Margin="0, 5, 0, 5"
+                            Content="Pause analysis"
+                            FontSize="20"/>
+
+                </UniformGrid>
+                
+            </Grid>
 
         </Grid>
 
