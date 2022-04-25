@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WordFilter" xmlns:entities="clr-namespace:WordFilter.Entities" d:DataContext="{d:DesignInstance Type=entities:Analyzer}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="670" Width="1059"
-        x:Name="WindowMain">
+        Title="MainWindow" Height="557" Width="934">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
@@ -18,7 +17,7 @@
         <Grid.Resources>
             <Style TargetType="Button">
                 <Style.Setters>
-
+               
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
@@ -43,7 +42,7 @@
                 </Style.Setters>
             </Style>
         </Grid.Resources>
-
+        
 
         <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0">
 
@@ -64,8 +63,8 @@
             <Grid Grid.Column="0">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="30*"></RowDefinition>
+                    <RowDefinition Height="100*"></RowDefinition>
                 </Grid.RowDefinitions>
 
 
@@ -78,125 +77,35 @@
                          Background="#182533"
                          BorderThickness="0"/>
             </Grid>
-
+            
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition Height="80"></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition Height="70"></RowDefinition>
+                    <RowDefinition Height="100*"></RowDefinition>
+                    <RowDefinition Height="30*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"></RowDefinition>
-                        <RowDefinition Height="50"></RowDefinition>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0"
-                               Text="Directort for report:"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               Foreground="#b0b0b0"
-                               FontSize="15"/>
-
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition ></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Width="350"
-                                   Height="20"
-                                   Grid.Column="0"
-                                   Foreground="#b0b0b0"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
-                                   FontSize="14"
-                                   Text="Not set..."
-                                   x:Name="TB_PathToReport"/>
-
-                        <Button Grid.Column="1"
-                                Width="100"
-                                Height="30"
-                                Content="Select"
-                                FontSize="20"
-                                HorizontalAlignment="Left"/>
-                    </Grid>
-
-
-                </Grid>
-
-
-                <UniformGrid Grid.Row="4" Columns="3">
+                <UniformGrid Grid.Row="1" Columns="3">
                     <Button Margin="0, 5, 5, 5"
                             Content="Start analysis"
                             FontSize="20"/>
-
+                    
                     <Button Margin="0, 5, 5, 5"
                             Content="Stop analysis"
                             FontSize="20"/>
-
+                    
                     <Button Margin="0, 5, 0, 5"
                             Content="Pause analysis"
                             FontSize="20"/>
 
                 </UniformGrid>
-
+                
             </Grid>
 
         </Grid>
 
-        <ListBox Grid.Row="2"
-                 Background="#17212b"
-                 BorderThickness="0"
-                 x:Name="LB_Drives">
+        <ListBox Grid.Row="2" Background="#17212b" BorderThickness="0">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Height="100" Width="800">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30"></ColumnDefinition>
-                            <ColumnDefinition Width="460"></ColumnDefinition>
-                            <ColumnDefinition Width="100"></ColumnDefinition>
-                            <ColumnDefinition Width="100"></ColumnDefinition>
-                            <ColumnDefinition Width="100"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding Path=path}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="20"
-                                   Foreground="#b0b0b0"/>
-
-                        <ProgressBar Grid.Column="1"
-                                     Margin="10, 30"
-                                     Maximum="{Binding Path=TotalFileCount}"
-                                     Value="{Binding Path=AnalyzedFileCount}"
-                                     Background="#202b36"
-                                     Foreground="#768c9e"/>
-                        
-                        <Button Grid.Column="2"
-                                Content="Pause"
-                                Margin="5, 25"
-                                FontSize="20"
-                                x:Name="BTN_PauseDriveAnalysis"
-                                Click="BTN_PauseDriveAnalysis_Click"
-                                Tag="{Binding}"/>
-                        
-                        <Button Grid.Column="3"
-                                Content="Resume"
-                                Margin="5, 25"
-                                FontSize="20"/>
-                        
-                        <Button Grid.Column="4"
-                                Content="Stop"
-                                Margin="5, 25"
-                                FontSize="20"/>
-                    </Grid>
-                    
-                    
                     
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -204,9 +113,9 @@
 
         <Grid Grid.Row="3" Background="#202b36">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="20*"></RowDefinition>
+                <RowDefinition Height="40*"></RowDefinition>
+                <RowDefinition Height="20*"></RowDefinition>
             </Grid.RowDefinitions>
 
 
@@ -214,38 +123,26 @@
                        Text="Our progress"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       FontSize="18"
+                       
                        Foreground="#b0b0b0"/>
-
+            
             <ProgressBar Grid.Row="1" 
                          Margin="10, 0"
                          Background="#202b36"
-                         Maximum="{Binding TotalFileCount}"
-                         Value="{Binding AnalyzedFileCount}"
-                         Foreground="#768c9e"/>
-
-            <Grid Grid.Row="2" HorizontalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Text="{Binding AnalyzedFileCount, UpdateSourceTrigger=PropertyChanged}"
-                           Grid.Column="0"
-                           Foreground="#b0b0b0"
-                           />
-
-                <TextBlock Text="/"
-                            Grid.Column="1"
-                           Foreground="#b0b0b0"/>
-
-                <TextBlock Text="{Binding TotalFileCount, UpdateSourceTrigger=PropertyChanged}"
-                           Grid.Column="2"
-                           Foreground="#b0b0b0"/>
-            </Grid>
+                         Maximum="100"
+                         Value="0"
+                          Foreground="#768c9e"/>
+            <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#b0b0b0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} / {1}">
+                        <Binding Path="AnalyzedFileCount" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="TotalFileCount"    UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            
         </Grid>
-
-
+        
+        
     </Grid>
 </Window>
