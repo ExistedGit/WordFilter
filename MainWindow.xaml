@@ -46,7 +46,7 @@
 
         <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0">
 
-            <MenuItem Header="File" Height="30" Width="50" >
+            <MenuItem Header="File" Height="25" Width="50" >
                 <MenuItem Header="Open..." Background="#242f3d" Foreground="#b0b0b0"/>
                 <MenuItem Header="Save as..." Background="#242f3d" Foreground="#b0b0b0"/>
             </MenuItem>
@@ -106,13 +106,20 @@
         <ListBox Grid.Row="2"
                  Background="#17212b"
                  BorderThickness="0"
-                 x:Name="LB_Drives">
+                 x:Name="LB_Drives"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
+                
                 <DataTemplate>
-                    <Grid Height="100" Width="800">
+                    <Grid >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="30"></ColumnDefinition>
-                            <ColumnDefinition Width="460"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="100"></ColumnDefinition>
                             <ColumnDefinition Width="100"></ColumnDefinition>
                             <ColumnDefinition Width="100"></ColumnDefinition>
@@ -126,9 +133,10 @@
                                    Foreground="#b0b0b0"/>
 
                         <ProgressBar Grid.Column="1"
-                                     Margin="10, 30"
+                                     Margin="10, 20"
                                      Maximum="{Binding Path=TotalFileCount}"
                                      Value="{Binding Path=AnalyzedFileCount}"
+                                     
                                      Background="#202b36"
                                      Foreground="#768c9e"/>
 
