@@ -128,9 +128,9 @@
 
         <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0">
 
-            <MenuItem Header="File" Height="25" Width="50" >
-                <MenuItem Header="Open..." Background="#242f3d" Foreground="#b0b0b0"/>
-                <MenuItem Header="Save as..." Background="#242f3d" Foreground="#b0b0b0"/>
+            <MenuItem Header="File" Height="25" Width="50" Click="MenuItem_Click" >
+                <MenuItem Name="OpenMenu" Header="Open..." Background="#242f3d" Foreground="#b0b0b0" Click="MenuItem_Click"/>
+                <MenuItem Name="SaveMenu" Header="Save as..." Background="#242f3d" Foreground="#b0b0b0" Click="MenuItem_Click"/>
             </MenuItem>
 
         </Menu>
@@ -155,7 +155,9 @@
                            HorizontalAlignment="Center"
                            FontSize="23"
                            Foreground="#b0b0b0"/>
-                <ListBox Grid.Row="1" 
+                <ListBox
+                         ItemsSource="{Binding BannedStrings}"
+                         Grid.Row="1" 
                          Background="#182533"
                          BorderThickness="0"/>
             </Grid>
