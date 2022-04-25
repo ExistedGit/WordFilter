@@ -131,7 +131,7 @@
                  BorderThickness="0"
                  x:Name="LB_Drives"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 IsHitTestVisible="False">
+                 >
             
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
