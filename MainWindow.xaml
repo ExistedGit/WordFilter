@@ -64,6 +64,7 @@
                     <Setter Property="Foreground" Value="#c1c1c1"/>
                 </Style.Setters>
             </Style>
+            
             <Style TargetType="ListBoxItem" x:Key="LB_DriversStyle">
                 <Style.Setters>
                     <Setter Property="Template">
@@ -79,39 +80,39 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0"
-                                   Text="{Binding Path=path}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="20"
-                                   Foreground="#b0b0b0"/>
+                                               Text="{Binding Path=path}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="20"
+                                               Foreground="#b0b0b0"/>
 
                                     <ProgressBar Grid.Column="1"
-                                     Margin="10, 20"
-                                     Maximum="{Binding Path=TotalFileCount}"
-                                     Value="{Binding Path=AnalyzedFileCount}"
+                                                 Margin="10, 20"
+                                                 Maximum="{Binding Path=TotalFileCount}"
+                                                 Value="{Binding Path=AnalyzedFileCount}"
                                      
-                                     Background="#202b36"
-                                     Foreground="#768c9e"/>
+                                                 Background="#202b36"
+                                                 Foreground="#768c9e"/>
 
                                     <Button Grid.Column="2"
-                                Content="Pause"
-                                Margin="5, 25"
-                                FontSize="20"
-                                x:Name="BTN_PauseDriveAnalysis"
-                                Click="BTN_PauseDriveAnalysis_Click"
-                                Tag="{Binding}"/>
+                                            Content="Pause"
+                                            Margin="5, 25"
+                                            FontSize="20"
+                                            x:Name="BTN_PauseDriveAnalysis"
+                                            Click="BTN_PauseDriveAnalysis_Click"
+                                            Tag="{Binding}"/>
 
                                     <Button Grid.Column="3"
-                                Content="Resume"
-                                Margin="5, 25"
-                                FontSize="20"
-                                Tag="{Binding}"/>
+                                            Content="Resume"
+                                            Margin="5, 25"
+                                            FontSize="20"
+                                            Tag="{Binding}"/>
 
                                     <Button Grid.Column="4"
-                                Content="Stop"
-                                Margin="5, 25"
-                                FontSize="20"
-                                Tag="{Binding}"/>
+                                            Content="Stop"
+                                            Margin="5, 25"
+                                            FontSize="20"
+                                            Tag="{Binding}"/>
 
                                 </Grid>
                                 <ControlTemplate.Triggers>
@@ -120,6 +121,7 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
+                    
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style.Setters>
             </Style>
@@ -214,8 +216,8 @@
             <ProgressBar Grid.Row="1" 
                          Margin="10, 0"
                          Background="#202b36"
-                         Maximum="100"
-                         Value="0"
+                         Maximum="{Binding TotalFileCount}"
+                         Value="{Binding AnalyzedFileCount}"
                           Foreground="#768c9e"/>
             <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#b0b0b0">
                 <TextBlock.Text>
