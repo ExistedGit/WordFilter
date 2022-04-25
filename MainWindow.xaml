@@ -190,7 +190,7 @@
                  BorderThickness="0"
                  x:Name="LB_Drives"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ItemContainerStyle="{DynamicResource LB_DriversStyle}" >
+                 ItemContainerStyle="{StaticResource LB_DriversStyle}" >
             
         
          
