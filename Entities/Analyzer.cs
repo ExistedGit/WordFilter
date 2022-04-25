@@ -12,7 +12,7 @@ namespace WordFilter.Entities
     public class Analyzer : INotifyPropertyChanged
     {
 
-        private string path { get; set; }
+        public string path { get; private set; }
         private int totalFileCount;
         private int analyzedFileCount;
 

@@ -6,9 +6,6 @@ using System.Xml.Serialization;
 
 namespace WordFilter.Entities
 {
-    /// <summary>
-    /// Класс, содержащий словарь найденных в файле слов к количеству этих слов в файле. При этом данные в объекте должны заполняться вручную.
-    /// </summary>
     [Serializable]
     public class FileReport
     {
