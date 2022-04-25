@@ -17,28 +17,49 @@
         <Grid.Resources>
             <Style TargetType="Button">
                 <Style.Setters>
-               
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
-                                <Border CornerRadius="10"
-                                        BorderBrush="#b0b0b0"
+
+                                <Border BorderBrush="#b0b0b0"
+                                      
                                         BorderThickness="2"
                                         x:Name="Border">
+                                    <Border.Resources>
+
+                                        <Color x:Key="BackgroundClickColor" >#020d1d</Color>
+                                        <Color x:Key="BackgroundHoverColor" >#131e2e</Color>
+                                        <Color x:Key="BackgroundNormalColor" >#242f3f</Color>
+                                    </Border.Resources>
+                                    <Border.Background>
+                                        <SolidColorBrush x:Name="BackgroundBrush" Color="#242f3f"/>
+                                    </Border.Background>
                                     <ContentPresenter VerticalAlignment="Center"
                                                       HorizontalAlignment="Center"/>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal"/>
+                                            <VisualState x:Name="MouseOver">
+                                                <Storyboard>
+                                                    <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="BackgroundBrush" Storyboard.TargetProperty="Color" To="{StaticResource BackgroundHoverColor}"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Pressed">
+                                                <Storyboard>
+                                                    <ColorAnimation Duration="0:0:0.1" Storyboard.TargetName="BackgroundBrush" Storyboard.TargetProperty="Color" To="{StaticResource BackgroundClickColor}"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
                                 </Border>
 
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="#17212b"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
+
+
                             </ControlTemplate>
                         </Setter.Value>
 
                     </Setter>
-                    <Setter Property="Foreground" Value="#b0b0b0"/>
+                    <Setter Property="Foreground" Value="#c1c1c1"/>
                 </Style.Setters>
             </Style>
         </Grid.Resources>
@@ -80,11 +101,11 @@
             
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="100*"></RowDefinition>
-                    <RowDefinition Height="30*"></RowDefinition>
+                    <RowDefinition Height="10*"></RowDefinition>
+                    <RowDefinition Height="3*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <UniformGrid Grid.Row="1" Columns="3">
+                <UniformGrid Grid.Row="1" Columns="3" Margin="15,5,15,5">
                     <Button Margin="0, 5, 5, 5"
                             Content="Start analysis"
                             FontSize="20"/>
