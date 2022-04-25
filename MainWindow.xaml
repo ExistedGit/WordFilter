@@ -21,21 +21,22 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
 
-                                <Border BorderBrush="#b0b0b0"
-                                      
+                                <Border BorderBrush="#b0b0b0"  
                                         BorderThickness="2"
                                         x:Name="Border">
                                     <Border.Resources>
-
                                         <Color x:Key="BackgroundClickColor" >#020d1d</Color>
                                         <Color x:Key="BackgroundHoverColor" >#131e2e</Color>
                                         <Color x:Key="BackgroundNormalColor" >#242f3f</Color>
                                     </Border.Resources>
+                                    
                                     <Border.Background>
                                         <SolidColorBrush x:Name="BackgroundBrush" Color="#242f3f"/>
                                     </Border.Background>
+                                    
                                     <ContentPresenter VerticalAlignment="Center"
                                                       HorizontalAlignment="Center"/>
+                                    
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup x:Name="CommonStates">
                                             <VisualState x:Name="Normal"/>
@@ -51,6 +52,7 @@
                                             </VisualState>
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
+                                    
                                 </Border>
 
 
@@ -128,7 +130,9 @@
                  Background="#17212b"
                  BorderThickness="0"
                  x:Name="LB_Drives"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 IsHitTestVisible="False">
+            
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -180,9 +184,11 @@
                                 Margin="5, 25"
                                 FontSize="20"
                                 Tag="{Binding}"/>
+
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+         
         </ListBox>
 
         <Grid Grid.Row="3" Background="#202b36">
