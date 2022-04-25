@@ -63,8 +63,8 @@
             <Grid Grid.Column="0">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="30*"></RowDefinition>
+                    <RowDefinition Height="100*"></RowDefinition>
                 </Grid.RowDefinitions>
 
 
@@ -80,8 +80,8 @@
             
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition Height="70"></RowDefinition>
+                    <RowDefinition Height="100*"></RowDefinition>
+                    <RowDefinition Height="30*"></RowDefinition>
                 </Grid.RowDefinitions>
 
                 <UniformGrid Grid.Row="1" Columns="3">
@@ -113,9 +113,9 @@
 
         <Grid Grid.Row="3" Background="#202b36">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="20*"></RowDefinition>
+                <RowDefinition Height="40*"></RowDefinition>
+                <RowDefinition Height="20*"></RowDefinition>
             </Grid.RowDefinitions>
 
 
@@ -123,7 +123,7 @@
                        Text="Our progress"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       FontSize="18"
+                       
                        Foreground="#b0b0b0"/>
             
             <ProgressBar Grid.Row="1" 
@@ -132,26 +132,15 @@
                          Maximum="100"
                          Value="0"
                           Foreground="#768c9e"/>
+            <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#b0b0b0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} / {1}">
+                        <Binding Path="AnalyzedFileCount" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="TotalFileCount"    UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             
-            <Grid Grid.Row="2" HorizontalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Text="{Binding AnalyzedFileCount, UpdateSourceTrigger=PropertyChanged}"
-                           Grid.Column="0"
-                           Foreground="#b0b0b0"/>
-                
-                <TextBlock Text="/"
-                            Grid.Column="1"
-                           Foreground="#b0b0b0"/>
-
-                <TextBlock Text="{Binding TotalFileCount, UpdateSourceTrigger=PropertyChanged}"
-                           Grid.Column="2"
-                           Foreground="#b0b0b0"/>
-            </Grid>
         </Grid>
         
         
