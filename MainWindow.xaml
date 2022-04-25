@@ -23,6 +23,7 @@
                             <ControlTemplate TargetType="Button">
                                 <Border CornerRadius="10"
                                         BorderBrush="#b0b0b0"
+                                        Background="#202b36"
                                         BorderThickness="2"
                                         x:Name="Border">
                                     <ContentPresenter VerticalAlignment="Center"
@@ -113,8 +114,8 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
             </ListBox.ItemContainerStyle>
+
             <ListBox.ItemTemplate>
-                
                 <DataTemplate>
                     <Grid >
                         <Grid.ColumnDefinitions>
@@ -151,12 +152,14 @@
                         <Button Grid.Column="3"
                                 Content="Resume"
                                 Margin="5, 25"
-                                FontSize="20"/>
+                                FontSize="20"
+                                Tag="{Binding}"/>
 
                         <Button Grid.Column="4"
                                 Content="Stop"
                                 Margin="5, 25"
-                                FontSize="20"/>
+                                FontSize="20"
+                                Tag="{Binding}"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
