@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WordFilter" xmlns:entities="clr-namespace:WordFilter.Entities" d:DataContext="{d:DesignInstance Type=entities:Analyzer}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="557" Width="934">
+        Title="MainWindow" Height="600" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
@@ -190,7 +190,8 @@
                  BorderThickness="0"
                  x:Name="LB_Drives"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ItemContainerStyle="{DynamicResource LB_DriversStyle}" >
+                 ItemContainerStyle="{DynamicResource LB_DriversStyle}" 
+                 ScrollViewer.CanContentScroll="False">
             
         
          
