@@ -111,7 +111,7 @@
                                             Margin="5, 25"
                                             FontSize="20"
                                             x:Name="BTN_PauseOrResumDriveAnalysis"
-                                            Click="BTN_PauseOrResumDriveAnalysis_Click"
+                                            Click="BTN_PauseOrResumeAnalyzer_Click"
                                             Tag="{Binding}"/>
 
                               
@@ -121,7 +121,7 @@
                                             Margin="5, 25"
                                             FontSize="20"
                                             x:Name="BTN_StopAnalyze"
-                                            Click="BTN_StopAnalyze_Click"
+                                            Click="BTN_StopAnalyzer_Click"
                                             Tag="{Binding}"/>
 
                                 </Grid>

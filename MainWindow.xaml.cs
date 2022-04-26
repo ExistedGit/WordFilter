@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,7 +40,13 @@ namespace WordFilter
         public ObservableCollection<Analyzer> Analyzers { get; set; }
         public ObservableCollection<string> BannedStrings { 
             get => bannedStrings; 
-            set { bannedStrings = value; OnPropertyChanged(); } 
+            set { 
+                bannedStrings = value;
+                if (Analyzers != null)
+                    foreach (var analyzer in Analyzers)
+                        analyzer.SetBannedStrings(bannedStrings);
+                OnPropertyChanged();
+            } 
         }
 
         private int totalFileCount;
@@ -48,18 +56,16 @@ namespace WordFilter
         public MainWindow()
         {
             InitializeComponent();
-
-            Analyzers = CreateAnalyzers();
-            LB_Drives.ItemsSource = Analyzers;
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
             DataContext = this;
-            
+
+            LB_Drives.ItemsSource = Analyzers = CreateAnalyzers();
         }
 
 
      
-        private void BTN_PauseOrResumDriveAnalysis_Click(object sender, RoutedEventArgs e)
+        private void BTN_PauseOrResumeAnalyzer_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             Analyzer analyzer = (Analyzer)button.Tag;
@@ -79,15 +85,13 @@ namespace WordFilter
             }
         }
 
-        private void BTN_StopAnalyze_Click(object sender, RoutedEventArgs e)
+        private void BTN_StopAnalyzer_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             Analyzer analyzer = (Analyzer)button.Tag;
 
             if (analyzer.State == Analyzer.AnalyzerState.Running)
-            {
                 analyzer.Stop();
-            }
         }
 
 
@@ -106,12 +110,16 @@ namespace WordFilter
                     using (StreamReader reader = new StreamReader(dialog.FileName))
                     {
                         string text = reader.ReadToEnd().Trim();
-                        BannedStrings = new ObservableCollection<string>(text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
+                        BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries));
+                        LB_BannedStrings.ItemsSource = BannedStrings;
+                        
                     }
                 }
             }
 
         }
+
+        
 
         private void OnPropertyChanged([CallerMemberName] string name = null)
         {

@@ -25,7 +25,7 @@ namespace WordFilter.Entities
         /// <summary>
         /// Отчёты о проанализированных файлах(какие слова и сколько их найдено)
         /// </summary>
-        public FileReport[] FileReports { get => fileReports.ToArray(); }
+        public FileReport[] FileReports => fileReports.ToArray();
         /// <summary>
         /// Главный поток, в котором выполняется анализ
         /// </summary>
@@ -51,9 +51,7 @@ namespace WordFilter.Entities
                 OnPropertyChanged();
             }
         }
-        public string RootName {
-            get => Path.GetDirectoryName(path); 
-        }
+        public string RootName => Path.GetDirectoryName(path);
 
         // *что-то на ломаном английском*
         public enum AnalyzerState
@@ -116,12 +114,40 @@ namespace WordFilter.Entities
             State = AnalyzerState.Stopped;
             return true;
         }
+        private void CountFiles(string dir)
+        {
+            string[] Catalogs = null;
+            try
+            {
+                Catalogs = Directory.GetDirectories(dir);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            
+
+            try
+            {
+                TotalFileCount += Directory.GetFiles(dir, "*.txt").Count();
+            }
+            catch (Exception)
+            {
+
+            }
+            foreach (var catalog in Catalogs)
+                CountFiles(catalog);
+        }
         private void AnalyzeDirectory(object obj = null, int level = 0) 
         {
             string dir = obj as string;
-            
-            if(dir == null)
+
+            if (dir == null)
+            {
                 dir = path;
+                CountFiles(dir);
+            }
 
             string[] Catalogs = null;
             try
@@ -132,8 +158,12 @@ namespace WordFilter.Entities
                 return;
             }
             string[] files = Directory.GetFiles(dir, "*.txt");
-            TotalFileCount += files.Length;
 
+            foreach (var item in files)
+            {
+                fileReports.Add(AnalyzeFile(item));
+                AnalyzedFileCount++;
+            }
 
             foreach (var catalog in Catalogs)
                 if (Directory.Exists(catalog)) {
@@ -147,11 +177,7 @@ namespace WordFilter.Entities
                         AnalyzeDirectory(catalog, level + 1);
             }
 
-            foreach (var item in files)
-            {
-                fileReports.Add(AnalyzeFile(item));
-                AnalyzedFileCount++;
-            }
+            
         }
 
         private FileReport AnalyzeFile(string path)
@@ -163,13 +189,7 @@ namespace WordFilter.Entities
                 using (StreamReader reader = new StreamReader(path)) {
 
                     string text = reader.ReadToEnd();
-                    text= Regex.Replace(text, @"[\r\n]", " ");
-                    string[] source = text.Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    var matchQuery = from word in source
-                                     where word.Equals(bannedString, StringComparison.InvariantCultureIgnoreCase)
-                                     select word;
-                    result.WordOccurences[bannedString] = matchQuery.Count(); 
+                    result.WordOccurences[bannedString] = Regex.Matches(text, $@"\b{bannedString}\b").Count;
                 }
             }
             return result;
