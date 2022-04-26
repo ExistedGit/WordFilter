@@ -1,20 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using WordFilter.Entities;
 
+using WordFilter.Entities;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 namespace WordFilter
 {
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public int TotalFileCount
-        { 
+        {
             get { return totalFileCount; }
-            set 
+            set
             {
                 totalFileCount = value;
                 OnPropertyChanged();
@@ -29,11 +33,16 @@ namespace WordFilter
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<Analyzer> Analyzers { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
+        public ObservableCollection<Analyzer> Analyzers { get; set; }
+        public ObservableCollection<string> BannedStrings { 
+            get => bannedStrings; 
+            set { bannedStrings = value; OnPropertyChanged(); } 
+        }
 
         private int totalFileCount;
         private int analyzedFileCount;
+        private ObservableCollection<string> bannedStrings;
 
         public MainWindow()
         {
@@ -44,6 +53,7 @@ namespace WordFilter
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
             DataContext = this;
+            
         }
 
 
@@ -84,7 +94,5 @@ namespace WordFilter
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
-      
     }
 }
