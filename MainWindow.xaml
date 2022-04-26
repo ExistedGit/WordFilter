@@ -76,7 +76,6 @@
                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                         <ColumnDefinition Width="100"></ColumnDefinition>
                                         <ColumnDefinition Width="100"></ColumnDefinition>
-                                        <ColumnDefinition Width="100"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0"
@@ -98,20 +97,18 @@
                                             Content="Pause"
                                             Margin="5, 25"
                                             FontSize="20"
-                                            x:Name="BTN_PauseDriveAnalysis"
-                                            Click="BTN_PauseDriveAnalysis_Click"
+                                            x:Name="BTN_PauseOrResumDriveAnalysis"
+                                            Click="BTN_PauseOrResumDriveAnalysis_Click"
                                             Tag="{Binding}"/>
+
+                              
 
                                     <Button Grid.Column="3"
-                                            Content="Resume"
-                                            Margin="5, 25"
-                                            FontSize="20"
-                                            Tag="{Binding}"/>
-
-                                    <Button Grid.Column="4"
                                             Content="Stop"
                                             Margin="5, 25"
                                             FontSize="20"
+                                            x:Name="BTN_StopAnalyze"
+                                            Click="BTN_StopAnalyze_Click"
                                             Tag="{Binding}"/>
 
                                 </Grid>
