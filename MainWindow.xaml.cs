@@ -16,9 +16,9 @@ namespace WordFilter
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public int TotalFileCount
-        { 
+        {
             get { return totalFileCount; }
-            set 
+            set
             {
                 totalFileCount = value;
                 OnPropertyChanged();
@@ -33,12 +33,16 @@ namespace WordFilter
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<Analyzer> Analyzers { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
-        public ObservableCollection<string> BannedStrings { get; set; }
+        public ObservableCollection<Analyzer> Analyzers { get; set; }
+        public ObservableCollection<string> BannedStrings { 
+            get => bannedStrings; 
+            set { bannedStrings = value; OnPropertyChanged(); } 
+        }
 
         private int totalFileCount;
         private int analyzedFileCount;
+        private ObservableCollection<string> bannedStrings;
 
         public MainWindow()
         {
@@ -47,6 +51,7 @@ namespace WordFilter
             Analyzers = CreateAnalyzers();
             LB_Drives.ItemsSource = Analyzers;
             DataContext = this;
+            
         }
 
 
@@ -72,16 +77,17 @@ namespace WordFilter
                 dialog.Filter = "WordFilter Config Files|*.wfc";
                 dialog.Title = "Открыть файл конфигурации...";
                 dialog.InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-                if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using(StreamReader reader = new StreamReader(dialog.FileName))
+                    using (StreamReader reader = new StreamReader(dialog.FileName))
                     {
                         string text = reader.ReadToEnd().Trim();
                         BannedStrings = new ObservableCollection<string>(text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
+                        LB_BannedStrings.ItemsSource = bannedStrings;
                     }
                 }
             }
-            
+
         }
     }
 }

@@ -64,7 +64,20 @@
                     <Setter Property="Foreground" Value="#c1c1c1"/>
                 </Style.Setters>
             </Style>
-            
+            <Style TargetType="MenuItem" x:Key="menuitem">
+                <Setter Property="Background" Value="#202b36"/>
+                <Setter Property="Foreground" Value="#879daf"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="Background" Value="#879daf" />
+                        <Setter Property="Foreground" Value="#202b36"/>
+                    </Trigger>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                        <Setter Property="Background" Value="#879daf" />
+                        <Setter Property="Foreground" Value="#202b36"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style TargetType="ListBoxItem" x:Key="LB_DriversStyle">
                 <Style.Setters>
                     <Setter Property="Template">
@@ -125,14 +138,22 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style.Setters>
             </Style>
+            <Style  TargetType="ListBoxItem"  x:Key="LB_BannedStrStyle">
+                <Style.Setters>
+                    <Setter Property="Margin" Value="3,3,3,3"/>
+                    <Setter Property="Foreground" Value="#879daf"/>
+                    <Setter Property="Background" Value="#202b36"/>
+                </Style.Setters>
+                
+            </Style>
         </Grid.Resources>
         
 
-        <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0">
+        <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0" BorderThickness="0">
 
-            <MenuItem Header="File" Height="25" Width="50" Click="MenuItem_Click" >
-                <MenuItem Name="OpenMenu" Header="Open..." Background="#242f3d" Foreground="#b0b0b0" Click="MenuItem_Click"/>
-                <MenuItem Name="SaveMenu" Header="Save as..." Background="#242f3d" Foreground="#b0b0b0" Click="MenuItem_Click"/>
+            <MenuItem Header="File" Height="25" Width="50" Click="MenuItem_Click" BorderThickness="0">
+                <MenuItem Style="{StaticResource menuitem}" Name="OpenMenu" Header="Open..."  Click="MenuItem_Click"/>
+                <MenuItem Style="{StaticResource menuitem}" Name="SaveMenu" Header="Save as..."  Click="MenuItem_Click" />
             </MenuItem>
 
         </Menu>
@@ -158,10 +179,13 @@
                            FontSize="23"
                            Foreground="#b0b0b0"/>
                 <ListBox
-                         ItemsSource="{Binding BannedStrings}"
+                         x:Name="LB_BannedStrings"
+                        ItemContainerStyle="{StaticResource LB_BannedStrStyle}"
                          Grid.Row="1" 
                          Background="#182533"
-                         BorderThickness="0"/>
+                         BorderThickness="0">
+                    
+                </ListBox>
             </Grid>
             
             <Grid Grid.Column="1">
@@ -194,6 +218,7 @@
                  BorderThickness="0"
                  x:Name="LB_Drives"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.CanContentScroll="False"
                  ItemContainerStyle="{StaticResource LB_DriversStyle}" >
             
         
@@ -202,9 +227,9 @@
 
         <Grid Grid.Row="3" Background="#202b36">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20*"></RowDefinition>
-                <RowDefinition Height="40*"></RowDefinition>
-                <RowDefinition Height="20*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="4*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
             </Grid.RowDefinitions>
 
 
