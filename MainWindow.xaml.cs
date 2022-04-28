@@ -69,7 +69,7 @@ namespace WordFilter
             InitializeComponent();
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
-            ReportFolderPath = null;
+
             DataContext = this;
             LB_Drives.ItemsSource = Analyzers = CreateAnalyzers();
         }
@@ -82,18 +82,11 @@ namespace WordFilter
             Analyzer analyzer = (Analyzer)button.Tag;
             
             if(analyzer.State == Analyzer.AnalyzerState.Paused)
-            {
                 analyzer.Start();
-                button.Content = "Pause";
-            }
             else
-            {
                 if(analyzer.State == Analyzer.AnalyzerState.Running)
-                {
                     analyzer.Pause();
-                    button.Content = "Resume";
-                }    
-            }
+
         }
 
         private void BTN_StopAnalyzer_Click(object sender, RoutedEventArgs e)
@@ -106,7 +99,9 @@ namespace WordFilter
         }
 
         private string curFilePath = null;
-        public string CurFilePath { get => curFilePath; 
+        public string CurFilePath 
+        { 
+            get => curFilePath; 
             private set {
                 curFilePath = value; OnPropertyChanged();
             }

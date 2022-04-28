@@ -318,13 +318,13 @@
 
                 <Grid Grid.Row="1" Margin="10, 10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="3*"></RowDefinition>
-                        <RowDefinition Height="7*"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Report folder:"
@@ -335,18 +335,16 @@
                                Grid.Column="0"
                                Grid.Row="0"/>
 
-                    <TextBlock
-                               VerticalAlignment="Center"
+                    <TextBlock VerticalAlignment="Center"
                                FontSize="17"
                                Foreground="#b0b0b0"
                                x:Name="TB_PathForReport"
                                Grid.Column="0"
                                Grid.Row="1"
-                               Text="{Binding ReportFolderPath, TargetNullValue=Not selected}">
-                    </TextBlock>
+                               Text="{Binding ReportFolderPath, TargetNullValue=Not selected}"/>
 
-                    <Button 
-                        Grid.Column="1"
+
+                    <Button Grid.Column="1"
                             Margin="10, 5, 0, 5"
                             Content="Select"
                             FontSize="15"
