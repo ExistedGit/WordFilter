@@ -1,16 +1,13 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-
-
 using WordFilter.Entities;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 
 namespace WordFilter
 {
@@ -48,18 +45,33 @@ namespace WordFilter
                 OnPropertyChanged();
             } 
         }
+        public string FolderForReport
+        {
+            get => folderForReport;
+            set 
+            {
+                folderForReport = value;
+                OnPropertyChanged();
+            }
 
+        }
+
+        private string folderForReport;
         private int totalFileCount;
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
+
+
 
         public MainWindow()
         {
             InitializeComponent();
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
-            DataContext = this;
 
+            FolderForReport = "Not set";
+
+            DataContext = this;
             LB_Drives.ItemsSource = Analyzers = CreateAnalyzers();
         }
 
@@ -119,7 +131,16 @@ namespace WordFilter
 
         }
 
-        
+        private void BTN_SelectFolderForReport_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+
+
+            if(folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                FolderForReport = folderBrowserDialog.SelectedPath;
+
+        }
+
 
         private void OnPropertyChanged([CallerMemberName] string name = null)
         {

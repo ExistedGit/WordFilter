@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WordFilter" xmlns:entities="clr-namespace:WordFilter.Entities" d:DataContext="{d:DesignInstance Type=entities:Analyzer}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="557" Width="934">
+        Title="MainWindow" Height="600" Width="900"
+        MinWidth="900"
+        MinHeight="600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
@@ -15,6 +17,66 @@
         </Grid.RowDefinitions>
 
         <Grid.Resources>
+            <Style x:Key="ResumeAndPauseAnalysisBTN" TargetType="Button">
+                <Style.Setters>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+
+                                <Border BorderBrush="#b0b0b0"  
+                                        BorderThickness="2"
+                                        x:Name="Border">
+                                    <Border.Resources>
+                                        <Color x:Key="BackgroundClickColor" >#020d1d</Color>
+                                        <Color x:Key="BackgroundHoverColor" >#131e2e</Color>
+                                        <Color x:Key="BackgroundNormalColor" >#242f3f</Color>
+                                    </Border.Resources>
+
+                                    <Border.Background>
+                                        <SolidColorBrush x:Name="BackgroundBrush" Color="#242f3f"/>
+                                    </Border.Background>
+
+                                    <ContentPresenter VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"                                                    />
+
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal"/>
+                                            <VisualState x:Name="MouseOver">
+                                                <Storyboard>
+                                                    <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="BackgroundBrush" Storyboard.TargetProperty="Color" To="{StaticResource BackgroundHoverColor}"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Pressed">
+                                                <Storyboard>
+                                                    <ColorAnimation Duration="0:0:0.1" Storyboard.TargetName="BackgroundBrush" Storyboard.TargetProperty="Color" To="{StaticResource BackgroundClickColor}"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+
+                                </Border>
+
+
+                                <ControlTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding State}" Value="Paused">
+                                        <Setter Property="Content" Value="Resume"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding State}" Value="Running">
+                                        <Setter Property="Content" Value="Pause"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding State}" Value="Stopped">
+                                        <Setter Property="Content" Value="Test"></Setter>
+                                    </DataTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+
+                    </Setter>
+                    <Setter Property="Foreground" Value="#c1c1c1"/>
+                </Style.Setters>
+            </Style>
+
             <Style TargetType="Button">
                 <Style.Setters>
                     <Setter Property="Template">
@@ -35,7 +97,7 @@
                                     </Border.Background>
                                     
                                     <ContentPresenter VerticalAlignment="Center"
-                                                      HorizontalAlignment="Center"/>
+                                                      HorizontalAlignment="Center"                                                    />
                                     
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup x:Name="CommonStates">
@@ -64,6 +126,7 @@
                     <Setter Property="Foreground" Value="#c1c1c1"/>
                 </Style.Setters>
             </Style>
+            
             <Style TargetType="MenuItem" x:Key="menuitem">
                 <Setter Property="Background" Value="#202b36"/>
                 <Setter Property="Foreground" Value="#879daf"/>
@@ -78,6 +141,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            
             <Style TargetType="ListBoxItem" x:Key="LB_DriversStyle">
                 <Style.Setters>
                     <Setter Property="Template">
@@ -98,27 +162,52 @@
                                                FontSize="20"
                                                Foreground="#b0b0b0"/>
 
-                                    <ProgressBar Grid.Column="1"
-                                                 Margin="10, 20"
+
+                                    <Grid Grid.Column="1">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="9*"></RowDefinition>
+                                            <RowDefinition Height="1*"></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+
+                                        <ProgressBar Grid.Row="0"
+                                                 Margin="0, 20, 0, 5"
                                                  Maximum="{Binding Path=TotalFileCount}"
                                                  Value="{Binding Path=AnalyzedFileCount}"
-                                     
                                                  Background="#202b36"
                                                  Foreground="#768c9e"/>
 
+                                        <TextBlock VerticalAlignment="Top"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="#b0b0b0"
+                                                   Grid.Row="1">    
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} / {1}">
+                                                    <Binding Path="AnalyzedFileCount" UpdateSourceTrigger="PropertyChanged"/>
+                                                    <Binding Path="TotalFileCount"    UpdateSourceTrigger="PropertyChanged"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+
+                                        </TextBlock>
+
+                                    </Grid>
+
                                     <Button Grid.Column="2"
-                                            Content="Pause"
+                                            VerticalAlignment="Center"
                                             Margin="5, 25"
                                             FontSize="20"
                                             x:Name="BTN_PauseOrResumDriveAnalysis"
                                             Click="BTN_PauseOrResumeAnalyzer_Click"
-                                            Tag="{Binding}"/>
+                                            Tag="{Binding}"
+                                            Style="{StaticResource ResumeAndPauseAnalysisBTN}"/>
 
-                              
+
 
                                     <Button Grid.Column="3"
                                             Content="Stop"
-                                            Margin="5, 25"
+                                            Margin="0, 25"
+                                            VerticalAlignment="Center"
                                             FontSize="20"
                                             x:Name="BTN_StopAnalyze"
                                             Click="BTN_StopAnalyzer_Click"
@@ -135,6 +224,7 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style.Setters>
             </Style>
+            
             <Style  TargetType="ListBoxItem"  x:Key="LB_BannedStrStyle">
                 <Style.Setters>
                     <Setter Property="Margin" Value="3,3,3,3"/>
@@ -143,6 +233,10 @@
                 </Style.Setters>
                 
             </Style>
+
+      
+            
+            
         </Grid.Resources>
         
 
@@ -163,10 +257,9 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
-
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30*"></RowDefinition>
-                    <RowDefinition Height="100*"></RowDefinition>
+                    <RowDefinition Height="15*"></RowDefinition>
+                    <RowDefinition Height="85*"></RowDefinition>
                 </Grid.RowDefinitions>
 
 
@@ -175,6 +268,7 @@
                            HorizontalAlignment="Center"
                            FontSize="23"
                            Foreground="#b0b0b0"/>
+                
                 <ListBox
                          x:Name="LB_BannedStrings"
                         ItemContainerStyle="{StaticResource LB_BannedStrStyle}"
@@ -187,11 +281,52 @@
             
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10*"></RowDefinition>
-                    <RowDefinition Height="3*"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <UniformGrid Grid.Row="1" Columns="3" Margin="15,5,15,5">
+
+                <Grid Grid.Row="1" Margin="0, 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"></RowDefinition>
+                        <RowDefinition Height="7*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="folder for report"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               FontSize="15"
+                               Foreground="#b0b0b0"
+                               Grid.Column="0"
+                               Grid.Row="0"/>
+
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontSize="15"
+                               Foreground="#b0b0b0"
+                               x:Name="TB_PathForReport"
+                               Grid.Column="0"
+                               Grid.Row="1"
+                               Text="{Binding FolderForReport}"/>
+
+                    <Button Grid.Column="1"
+                            Margin="10, 5, 0, 5"
+                            Content="Select"
+                            FontSize="20"
+                            Grid.Row="1"
+                            x:Name="BTN_SelectFolderForReport"
+                            Click="BTN_SelectFolderForReport_Click"/>
+
+
+                </Grid>
+                <UniformGrid Grid.Row="3" Columns="3" Margin="15,5,15,5">
                     <Button Margin="0, 5, 5, 5"
                             Content="Start analysis"
                             FontSize="20"/>
@@ -236,14 +371,25 @@
                        HorizontalAlignment="Center"
                        
                        Foreground="#b0b0b0"/>
+
+
+
+                
+            <ProgressBar Grid.Row="1"
+                            Margin="10, 0"
+                            Background="#202b36"
+                            Maximum="{Binding TotalFileCount}"
+                            Value="{Binding AnalyzedFileCount}"
+                            Foreground="#768c9e"/>
+
+           
+        
             
-            <ProgressBar Grid.Row="1" 
-                         Margin="10, 0"
-                         Background="#202b36"
-                         Maximum="{Binding TotalFileCount}"
-                         Value="{Binding AnalyzedFileCount}"
-                          Foreground="#768c9e"/>
-            <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#b0b0b0">
+       
+            <TextBlock Grid.Row="2"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Foreground="#b0b0b0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0} / {1}">
                         <Binding Path="AnalyzedFileCount" UpdateSourceTrigger="PropertyChanged"/>

@@ -11,16 +11,14 @@ namespace WordFilter.Entities
 {
     public class Analyzer : INotifyPropertyChanged
     {
-
-        public string path { get; private set; }
         private int totalFileCount;
         private int analyzedFileCount;
-
+        private AnalyzerState state;
         /// <summary>
         /// Список запрещённых строк
         /// </summary>
         public List<string> BannedStrings { get; private set; }
-        
+
         private List<FileReport> fileReports = new List<FileReport>();
         /// <summary>
         /// Отчёты о проанализированных файлах(какие слова и сколько их найдено)
@@ -30,8 +28,8 @@ namespace WordFilter.Entities
         /// Главный поток, в котором выполняется анализ
         /// </summary>
         private Thread thread = null;
-        
-        
+
+        public string path { get; private set; }
         public int TotalFileCount
         {
             get => totalFileCount;
@@ -44,7 +42,7 @@ namespace WordFilter.Entities
         }
         public int AnalyzedFileCount
         {
-            get => analyzedFileCount; 
+            get => analyzedFileCount;
             set
             {
                 analyzedFileCount = value;
@@ -52,20 +50,29 @@ namespace WordFilter.Entities
             }
         }
         public string RootName => Path.GetDirectoryName(path);
-
-        // *что-то на ломаном английском*
         public enum AnalyzerState
         {
             Running,
             Paused,
             Stopped
         }
-        public AnalyzerState State { get; private set; } = AnalyzerState.Stopped;
+
+        public AnalyzerState State
+        {
+            get { return state; }
+            private set
+            {
+                state = value;
+                OnPropertyChanged();
+            }
+        }
+
         public Analyzer(string path)
         {
             if (!Directory.Exists(path))
                 throw new ArgumentOutOfRangeException("path");
 
+            State = AnalyzerState.Stopped;
             this.path = path;
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
@@ -175,7 +182,7 @@ namespace WordFilter.Entities
                     }
                     else
                         AnalyzeDirectory(catalog, level + 1);
-            }
+                }
 
             
         }
