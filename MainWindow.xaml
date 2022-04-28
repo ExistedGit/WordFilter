@@ -349,21 +349,23 @@
                             Content="Select"
                             FontSize="15"
                             Grid.Row="1"
+                            
                             x:Name="BTN_SelectFolderForReport"
                             Click="BTN_SelectFolderForReport_Click"/>
                 </Grid>
-                <UniformGrid Grid.Row="3" Columns="3" Margin="15,5,15,5">
+                <UniformGrid Grid.Row="3" Columns="3" HorizontalAlignment="Center" Margin="15,5,15,5">
                     <Button Margin="0, 5, 5, 5"
                             Content="Start analysis"
-                            FontSize="20"/>
-                    
-                    <Button Margin="0, 5, 5, 5"
-                            Content="Stop analysis"
-                            FontSize="20"/>
+                            
+                            FontSize="18"/>
                     
                     <Button Margin="0, 5, 0, 5"
+                            Content="Stop analysis"
+                            FontSize="18"/>
+                    
+                    <Button Margin="5, 5, 0, 5"
                             Content="Pause analysis"
-                            FontSize="20"/>
+                            FontSize="18"/>
 
                 </UniformGrid>
                 
