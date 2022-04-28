@@ -341,7 +341,7 @@
                                x:Name="TB_PathForReport"
                                Grid.Column="0"
                                Grid.Row="1"
-                               Text="{Binding FolderForReport}"/>
+                               Text="{Binding ReportFolderPath}"/>
 
                     <Button Grid.Column="1"
                             Margin="10, 5, 0, 5"
@@ -378,11 +378,7 @@
                  x:Name="LB_Drives"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.CanContentScroll="False"
-                 ItemContainerStyle="{StaticResource LB_DriversStyle}" >
-            
-        
-         
-        </ListBox>
+                 ItemContainerStyle="{StaticResource LB_DriversStyle}"/>
 
         <Grid Grid.Row="3" Background="#202b36">
             <Grid.RowDefinitions>

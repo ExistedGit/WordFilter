@@ -48,16 +48,16 @@ namespace WordFilter
         }
         public string ReportFolderPath
         {
-            get => folderForReport;
+            get => reportFolderPath;
             set 
             {
-                folderForReport = value;
+                reportFolderPath = value;
                 OnPropertyChanged();
             }
 
         }
 
-        private string folderForReport;
+        private string reportFolderPath;
         private int totalFileCount;
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
