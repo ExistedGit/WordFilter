@@ -318,8 +318,8 @@
 
                 <Grid Grid.Row="1" Margin="10, 10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
@@ -342,8 +342,8 @@
                                x:Name="TB_PathForReport"
                                Grid.Column="0"
                                Grid.Row="1"
-                               Text="{Binding ReportFolderPath, TargetNullValue=Not selected}">
-                    </TextBlock>
+                               Text="{Binding ReportFolderPath, TargetNullValue=Not selected}"/>
+
 
                     <Button 
                         Grid.Column="1"
@@ -351,21 +351,23 @@
                             Content="Select"
                             FontSize="15"
                             Grid.Row="1"
+                            
                             x:Name="BTN_SelectFolderForReport"
                             Click="BTN_SelectFolderForReport_Click"/>
                 </Grid>
-                <UniformGrid Grid.Row="3" Columns="3" Margin="15,5,15,5">
+                <UniformGrid Grid.Row="3" Columns="3" HorizontalAlignment="Center" Margin="15,5,15,5">
                     <Button Margin="0, 5, 5, 5"
                             Content="Start analysis"
-                            FontSize="20"/>
-                    
-                    <Button Margin="0, 5, 5, 5"
-                            Content="Stop analysis"
-                            FontSize="20"/>
+                            
+                            FontSize="18"/>
                     
                     <Button Margin="0, 5, 0, 5"
+                            Content="Stop analysis"
+                            FontSize="18"/>
+                    
+                    <Button Margin="5, 5, 0, 5"
                             Content="Pause analysis"
-                            FontSize="20"/>
+                            FontSize="18"/>
 
                 </UniformGrid>
                 
