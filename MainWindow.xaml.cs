@@ -48,7 +48,7 @@ namespace WordFilter
         }
         public string ReportFolderPath
         {
-            get => folderForReport;
+            get => reportFolderPath;
             set 
             {
                 reportFolderPath = value;
