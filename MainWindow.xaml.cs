@@ -17,7 +17,7 @@ namespace WordFilter
     {
         public int TotalFileCount
         {
-            get { return totalFileCount; }
+            get => totalFileCount;
             set
             {
                 totalFileCount = value;
@@ -26,7 +26,7 @@ namespace WordFilter
         }
         public int AnalyzedFileCount
         {
-            get { return analyzedFileCount; }
+            get => analyzedFileCount;
             set
             {
                 analyzedFileCount = value;
@@ -48,7 +48,7 @@ namespace WordFilter
         }
         public string ReportFolderPath
         {
-            get => reportFolderPath;
+            get => folderForReport;
             set 
             {
                 reportFolderPath = value;
@@ -69,9 +69,7 @@ namespace WordFilter
             InitializeComponent();
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
-
-            ReportFolderPath = "Not set";
-
+            ReportFolderPath = null;
             DataContext = this;
             LB_Drives.ItemsSource = Analyzers = CreateAnalyzers();
         }
