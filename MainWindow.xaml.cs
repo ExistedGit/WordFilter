@@ -7,7 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using WordFilter.Entities;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
-using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace WordFilter
 {
@@ -45,7 +46,7 @@ namespace WordFilter
                 OnPropertyChanged();
             } 
         }
-        public string FolderForReport
+        public string ReportFolderPath
         {
             get => folderForReport;
             set 
@@ -69,7 +70,7 @@ namespace WordFilter
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
 
-            FolderForReport = "Not set";
+            ReportFolderPath = "Not set";
 
             DataContext = this;
             LB_Drives.ItemsSource = Analyzers = CreateAnalyzers();
@@ -106,7 +107,13 @@ namespace WordFilter
                 analyzer.Stop();
         }
 
-
+        private string curFilePath = null;
+        public string CurFilePath { get => curFilePath; 
+            private set {
+                curFilePath = value; OnPropertyChanged();
+            }
+        }
+        
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)sender;
@@ -116,31 +123,51 @@ namespace WordFilter
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.Filter = "WordFilter Config Files|*.wfc";
                 dialog.Title = "Открыть файл конфигурации...";
-                dialog.InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+                dialog.InitialDirectory = curFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     using (StreamReader reader = new StreamReader(dialog.FileName))
                     {
                         string text = reader.ReadToEnd().Trim();
-                        BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries));
+                        BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
                         LB_BannedStrings.ItemsSource = BannedStrings;
-                        
+                        CurFilePath = dialog.FileName;
                     }
                 }
             }
-
+            else if (item.Name.Equals("SaveMenu"))
+            {
+                using (StreamWriter writer = new StreamWriter(CurFilePath))
+                    foreach (string s in BannedStrings)
+                        writer.WriteLine(s);
+            }
+            else if (item.Name.Equals("SaveAsMenu"))
+            {
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = "WordFilter Config Files|*.wfc";
+                dialog.Title = "Открыть файл конфигурации как...";
+                dialog.InitialDirectory = CurFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    using (StreamWriter writer = new StreamWriter(dialog.FileName))
+                        foreach (string s in BannedStrings)
+                            writer.WriteLine(s);
+            }
         }
 
         private void BTN_SelectFolderForReport_Click(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-
-
-            if(folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                FolderForReport = folderBrowserDialog.SelectedPath;
-
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
+            {
+                dialog.IsFolderPicker = true;
+                dialog.Multiselect = false;
+                dialog.InitialDirectory = Environment.CurrentDirectory;
+                dialog.Title = "Выбрать папку для отчёта...";
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    ReportFolderPath = dialog.FileName;
+                }
+            }
         }
-
 
         private void OnPropertyChanged([CallerMemberName] string name = null)
         {

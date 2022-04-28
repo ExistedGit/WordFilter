@@ -59,7 +59,7 @@ namespace WordFilter.Entities
 
         public AnalyzerState State
         {
-            get { return state; }
+            get => state;   
             private set
             {
                 state = value;
@@ -209,11 +209,8 @@ namespace WordFilter.Entities
         }
 
 
-        private void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
+        private void OnPropertyChanged([CallerMemberName] string name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

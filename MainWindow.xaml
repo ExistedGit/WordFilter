@@ -126,7 +126,26 @@
                     <Setter Property="Foreground" Value="#c1c1c1"/>
                 </Style.Setters>
             </Style>
-            
+
+            <Style TargetType="MenuItem" x:Key="savemenuitem">
+                <Setter Property="Background" Value="#202b36"/>
+                <Setter Property="Foreground" Value="#879daf"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="Background" Value="#879daf" />
+                        <Setter Property="Foreground" Value="#202b36"/>
+                    </Trigger>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                        <Setter Property="Background" Value="#879daf" />
+                        <Setter Property="Foreground" Value="#202b36"/>
+                    </Trigger>
+                    <DataTrigger Binding="{Binding CurFilePath}" Value="{x:Null}">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+
             <Style TargetType="MenuItem" x:Key="menuitem">
                 <Setter Property="Background" Value="#202b36"/>
                 <Setter Property="Foreground" Value="#879daf"/>
@@ -244,7 +263,8 @@
 
             <MenuItem Header="File" Height="25" Width="50" Click="MenuItem_Click" BorderThickness="0">
                 <MenuItem Style="{StaticResource menuitem}" Name="OpenMenu" Header="Open..."  Click="MenuItem_Click"/>
-                <MenuItem Style="{StaticResource menuitem}" Name="SaveMenu" Header="Save as..."  Click="MenuItem_Click" />
+                <MenuItem Style="{StaticResource savemenuitem}" Name="SaveMenu" Header="Save" Click="MenuItem_Click"/>
+                <MenuItem Style="{StaticResource menuitem}" Name="SaveAsMenu" Header="Save as..."  Click="MenuItem_Click"/>
             </MenuItem>
 
         </Menu>
@@ -265,8 +285,9 @@
 
                 <TextBlock Text="Banned strings"
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           FontSize="23"
+                           HorizontalAlignment="Left"
+                           Margin="10"
+                           FontSize="18"
                            Foreground="#b0b0b0"/>
                 
                 <ListBox
@@ -277,6 +298,12 @@
                          BorderThickness="0">
                     
                 </ListBox>
+                <TextBlock Text="{Binding CurFilePath}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Margin="0,10"
+                    FontSize="12"
+                    Foreground="#b0b0b0"/>
             </Grid>
             
             <Grid Grid.Column="1">
