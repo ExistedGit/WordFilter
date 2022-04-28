@@ -381,11 +381,7 @@
                  x:Name="LB_Drives"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.CanContentScroll="False"
-                 ItemContainerStyle="{StaticResource LB_DriversStyle}" >
-            
-        
-         
-        </ListBox>
+                 ItemContainerStyle="{StaticResource LB_DriversStyle}"/>
 
         <Grid Grid.Row="3" Background="#202b36">
             <Grid.RowDefinitions>

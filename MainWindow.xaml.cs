@@ -49,7 +49,7 @@ namespace WordFilter
         public string ReportFolderPath
         {
             get => reportFolderPath;
-            set
+            set 
             {
                 reportFolderPath = value;
                 OnPropertyChanged();
