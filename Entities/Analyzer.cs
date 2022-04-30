@@ -57,12 +57,13 @@ namespace WordFilter.Entities
             set
             {
                 analyzedFileCount = value;
-                if (analyzedFileCount == TotalFileCount)
-                {
-                    State = AnalyzerState.Completed;
-                    Completed?.Invoke(this);
-                }
                 OnPropertyChanged();
+                if (totalFileCount!=0)
+                    if (analyzedFileCount == TotalFileCount)
+                    {
+                        State = AnalyzerState.Completed;
+                        Completed?.Invoke(this);
+                    }
             }
         }
         public string Root => Path;
@@ -156,24 +157,23 @@ namespace WordFilter.Entities
         {
             string dir = obj as string;
             string[] Catalogs = null;
-            try
-            {
-                Catalogs = Directory.GetDirectories(dir);
-            }
-            catch (Exception)
-            {
-                return;
-            }
-
-
-
+           
             try
             {
                 TotalFileCount += Directory.GetFiles(dir, "*.txt").Count();
             }
             catch (Exception)
             {
-
+                Console.WriteLine("tfc ex");
+            }
+            try
+            {
+                Catalogs = Directory.GetDirectories(dir);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("fuck");
+                return;
             }
             foreach (var catalog in Catalogs)
                 CountFiles(catalog, level + 1);

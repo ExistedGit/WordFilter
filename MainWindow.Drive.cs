@@ -11,7 +11,7 @@ namespace WordFilter
 {
     partial class MainWindow
     {
-        private void CreateAnalyzers()
+        public void CreateAnalyzers()
         {
             totalFileCount = 0;
             string[] debugDrives = new string[] { @"A:\", @"B:\" };
@@ -24,6 +24,8 @@ namespace WordFilter
                     if (DEBUG && !debugDrives.Contains(drive.Name))
                         continue;
                     var analyzer = new Analyzer(drive.RootDirectory.FullName);
+                    if(BannedStrings!= null)
+                        analyzer.SetBannedStrings(BannedStrings);
                     analyzer.FilesCounted += Analyzer_FilesCounted;
                     analyzer.Completed += Analyzer_Completed;
                     analyzer.PropertyChanged += Analyzer_PropertyChanged;
@@ -41,6 +43,10 @@ namespace WordFilter
             Analyzer analyzer = sender as Analyzer;
             if(e.PropertyName == "AnalyzedFileCount")
             {
+                if (analyzer.AnalyzedFileCount == 1795)
+                {
+
+                }
                 AnalyzedFileCount = Analyzers.Select(a => a.AnalyzedFileCount).Sum();
             }
         }
@@ -87,8 +93,11 @@ namespace WordFilter
                     return;
                 }
             TotalFileCount += sender.TotalFileCount;
-            if (Analyzers.Where(a=>a.Ready).Count() == Analyzers.Count)
+            if (Analyzers.Where(a => a.Ready).Count() == Analyzers.Count)
+            {
                 AnalyzersLoaded = true;
+                SilentAllFilesCounted?.Invoke(this);
+            }
         }
     }
 }
