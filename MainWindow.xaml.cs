@@ -64,11 +64,14 @@ namespace WordFilter
             {
                 reportFolderPath = value;
 
-                CreateAnalyzers();
-                LB_Drives.ItemsSource = Analyzers;
+                if (Analyzers == null)
+                {
+                    CreateAnalyzers();
+                    LB_Drives.ItemsSource = Analyzers;
+                }
                 if (DEBUG)
                 {
-                    BannedStrings = new ObservableCollection<string>(new string[] { "Москва", "Кремль", "Путин" });
+                    BannedStrings = new ObservableCollection<string>(new string[] { "Москва", "Кремль", "Путин", "fuck" });
                     LB_BannedStrings.ItemsSource = BannedStrings;
                 }
                 OnPropertyChanged();

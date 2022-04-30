@@ -27,6 +27,7 @@ namespace WordFilter.Entities
         public WordCounter[] WordOccurenceAttribute
         { 
             get => WordOccurences.Select(pair => new WordCounter(pair.Key, pair.Value)).ToArray();
+            set { }
         }    
         
         /// <summary>
