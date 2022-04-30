@@ -17,7 +17,34 @@
         </Grid.RowDefinitions>
 
         <Grid.Resources>
-            <Style x:Key="ResumeAndPauseAnalysisBTN" TargetType="Button">
+            <Style x:Key="AnalyzerProgressBar" TargetType="ProgressBar">
+                <Style.Setters>
+
+                    <Setter Property="Background" Value="#202b36"></Setter>
+                </Style.Setters>
+                <Style.Resources>
+                    <ColorAnimation x:Key="StopAnim" Storyboard.TargetProperty="Foreground" To="IndianRed" Duration="0:0:4"/>
+                    <ColorAnimation x:Key="PauseAnum" Storyboard.TargetProperty="Foreground" To="Gray" Duration="0:0:4"/>
+                    <ColorAnimation x:Key="RunAnum" Storyboard.TargetProperty="Foreground" To="#768c9e" Duration="0:0:4"/>
+
+                </Style.Resources>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Stopped}">
+                        <Setter Property="Foreground" Value="IndianRed"></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Running}">
+                        <Setter Property="Foreground" Value="#768c9e"></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Paused}">
+                        <Setter Property="Foreground" Value="Gray"></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Completed}">
+                        <Setter Property="Foreground" Value="LightGreen"></Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+
+            </Style>
+            <Style x:Key="StopBTN" TargetType="Button">
                 <Style.Setters>
                     <Setter Property="Template">
                         <Setter.Value>
@@ -58,44 +85,110 @@
                                 </Border>
 
 
-                                <ControlTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding State}" Value="Paused">
-                                        <Setter Property="Content" Value="Resume"></Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding State}" Value="Running">
-                                        <Setter Property="Content" Value="Pause"></Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding State}" Value="Stopped">
-                                        <Setter Property="Content" Value="Test"></Setter>
-                                    </DataTrigger>
-                                </ControlTemplate.Triggers>
+
+                            </ControlTemplate>
+                        </Setter.Value>
+
+                    </Setter>
+                </Style.Setters>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Stopped}">
+                        <Setter Property="IsEnabled" Value="False"></Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ResumeAndPauseAnalysisBTN" TargetType="Button">
+                <Style.Resources>
+                    <Image x:Key="start"  Source="Resources/start.png" Margin="3"></Image>
+                </Style.Resources>
+                <Style.Setters>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+
+                                <Border BorderBrush="#b0b0b0"  
+                                        BorderThickness="2"
+                                        x:Name="Border">
+                                    <Border.Resources>
+                                        <Color x:Key="BackgroundClickColor" >#020d1d</Color>
+                                        <Color x:Key="BackgroundHoverColor" >#131e2e</Color>
+                                        <Color x:Key="BackgroundNormalColor" >#242f3f</Color>
+                                    </Border.Resources>
+
+                                    <Border.Background>
+                                        <SolidColorBrush x:Name="BackgroundBrush" Color="#242f3f"/>
+                                    </Border.Background>
+
+                                    <ContentPresenter VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"                                                    />
+
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal"/>
+                                            <VisualState x:Name="MouseOver">
+                                                <Storyboard>
+                                                    <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="BackgroundBrush" Storyboard.TargetProperty="Color" To="{StaticResource BackgroundHoverColor}"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Pressed">
+                                                <Storyboard>
+                                                    <ColorAnimation Duration="0:0:0.1" Storyboard.TargetName="BackgroundBrush" Storyboard.TargetProperty="Color" To="{StaticResource BackgroundClickColor}"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+
+                                </Border>
+
+
+                                
                             </ControlTemplate>
                         </Setter.Value>
 
                     </Setter>
                     <Setter Property="Foreground" Value="#c1c1c1"/>
+                    <Setter Property="Content" Value="{StaticResource start}"></Setter>                
                 </Style.Setters>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=Ready}" Value="False">
+                        <Setter Property="IsEnabled" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Running}">
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <Image Source="Resources/pause.png" Margin="3"></Image>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                    
+                </Style.Triggers>
             </Style>
 
             <Style TargetType="Button">
                 <Style.Setters>
+                    
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
 
-                                <Border BorderBrush="#b0b0b0"  
+                                <Border   
                                         BorderThickness="2"
                                         x:Name="Border">
                                     <Border.Resources>
+                                        <Color x:Key="BackgroundDisabledColor" >#020d1d</Color>
                                         <Color x:Key="BackgroundClickColor" >#020d1d</Color>
                                         <Color x:Key="BackgroundHoverColor" >#131e2e</Color>
                                         <Color x:Key="BackgroundNormalColor" >#242f3f</Color>
+                                        <Color x:Key="BorderColor">#b0b0b0</Color>
+                                        <Color x:Key="BorderDisabledColor">#b0b0b0</Color>
                                     </Border.Resources>
                                     
                                     <Border.Background>
                                         <SolidColorBrush x:Name="BackgroundBrush" Color="#242f3f"/>
                                     </Border.Background>
-                                    
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush x:Name="BorderBrush" Color="#b0b0b0"/>
+                                    </Border.BorderBrush>
                                     <ContentPresenter VerticalAlignment="Center"
                                                       HorizontalAlignment="Center"                                                    />
                                     
@@ -128,23 +221,6 @@
             </Style>
 
 
-            <Style TargetType="MenuItem" x:Key="savemenuitem">
-                <Setter Property="Background" Value="#202b36"/>
-                <Setter Property="Foreground" Value="#879daf"/>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="Background" Value="#879daf" />
-                        <Setter Property="Foreground" Value="#202b36"/>
-                    </Trigger>
-                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                        <Setter Property="Background" Value="#879daf" />
-                        <Setter Property="Foreground" Value="#202b36"/>
-                    </Trigger>
-                    <DataTrigger Binding="{Binding CurFilePath}" Value="{x:Null}">
-                        <Setter Property="IsEnabled" Value="False"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
 
 
             <Style TargetType="MenuItem" x:Key="menuitem">
@@ -171,8 +247,8 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="30"></ColumnDefinition>
                                         <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="100"></ColumnDefinition>
-                                        <ColumnDefinition Width="100"></ColumnDefinition>
+                                        <ColumnDefinition Width="36"></ColumnDefinition>
+                                        <ColumnDefinition Width="36"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0"
@@ -186,17 +262,16 @@
                                     <Grid Grid.Column="1">
 
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="9*"></RowDefinition>
-                                            <RowDefinition Height="1*"></RowDefinition>
+                                            <RowDefinition Height="60"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
                                         </Grid.RowDefinitions>
 
 
                                         <ProgressBar Grid.Row="0"
-                                                 Margin="0, 20, 0, 5"
+                                                 Margin="5, 20, 5, 5"
                                                  Maximum="{Binding Path=TotalFileCount}"
                                                  Value="{Binding Path=AnalyzedFileCount}"
-                                                 Background="#202b36"
-                                                 Foreground="#768c9e"/>
+                                                     Style="{StaticResource AnalyzerProgressBar}"/>
 
                                         <TextBlock VerticalAlignment="Top"
                                                    HorizontalAlignment="Center"
@@ -215,23 +290,24 @@
 
                                     <Button Grid.Column="2"
                                             VerticalAlignment="Center"
-                                            Margin="5, 25"
-                                            FontSize="20"
+                                            Height="32"
+                                            Margin="3"
                                             x:Name="BTN_PauseOrResumDriveAnalysis"
                                             Click="BTN_PauseOrResumeAnalyzer_Click"
                                             Tag="{Binding}"
-                                            Style="{StaticResource ResumeAndPauseAnalysisBTN}"/>
-
-
+                                            Style="{StaticResource ResumeAndPauseAnalysisBTN}">
+                                    </Button>
 
                                     <Button Grid.Column="3"
-                                            Content="Stop"
-                                            Margin="0, 25"
                                             VerticalAlignment="Center"
-                                            FontSize="20"
                                             x:Name="BTN_StopAnalyze"
                                             Click="BTN_StopAnalyzer_Click"
-                                            Tag="{Binding}"/>
+                                            Tag="{Binding}"
+                                            Margin="3"
+                                            Height="32"
+                                            Style="{StaticResource StopBTN}">
+                                        <Image Source="Resources/stop.png" Margin="3,3,3,3"></Image>
+                                    </Button>
 
                                 </Grid>
                                 <ControlTemplate.Triggers>
@@ -254,18 +330,15 @@
                 
             </Style>
 
-      
-            
-            
+
+
         </Grid.Resources>
         
 
         <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0" BorderThickness="0">
 
             <MenuItem Header="File" Height="25" Width="50" Click="MenuItem_Click" BorderThickness="0">
-                <MenuItem Style="{StaticResource menuitem}" Name="OpenMenu" Header="Open..."  Click="MenuItem_Click"/>
-                <MenuItem Style="{StaticResource savemenuitem}" Name="SaveMenu" Header="Save" Click="MenuItem_Click"/>
-                <MenuItem Style="{StaticResource menuitem}" Name="SaveAsMenu" Header="Save as..."  Click="MenuItem_Click"/>
+                <MenuItem Style="{StaticResource menuitem}" Name="OpenMenu" Header="Open list..."  Click="MenuItem_Click"/>
             </MenuItem>
 
         </Menu>
@@ -353,19 +426,22 @@
                             x:Name="BTN_SelectFolderForReport"
                             Click="BTN_SelectFolderForReport_Click"/>
                 </Grid>
-                <UniformGrid Grid.Row="3" Columns="3" HorizontalAlignment="Center" Margin="15,5,15,5">
+                <UniformGrid Grid.Row="3" Columns="3" HorizontalAlignment="Center" Margin="15,5,15,5"
+                            IsEnabled="{Binding AnalyzersLoaded}">
                     <Button Margin="0, 5, 5, 5"
-                            Content="Start analysis"
-                            
+                            Content="Start all"
+                            Click="StartAllAnalyzersBTN"
                             FontSize="18"/>
                     
                     <Button Margin="0, 5, 0, 5"
-                            Content="Stop analysis"
-                            FontSize="18"/>
+                            Content="Stop all"
+                            FontSize="18"
+                            Click="StopAllAnalyzersBTN"/>
                     
                     <Button Margin="5, 5, 0, 5"
-                            Content="Pause analysis"
-                            FontSize="18"/>
+                            Content="Pause all"
+                            FontSize="18"
+                            Click="PauseAllAnalyzers"/>
 
                 </UniformGrid>
                 
@@ -378,7 +454,7 @@
                  BorderThickness="0"
                  x:Name="LB_Drives"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  ScrollViewer.CanContentScroll="False"
+                 ScrollViewer.CanContentScroll="False"
                  ItemContainerStyle="{StaticResource LB_DriversStyle}"/>
 
         <Grid Grid.Row="3" Background="#202b36">
@@ -390,7 +466,7 @@
 
 
             <TextBlock Grid.Row="0"
-                       Text="Our progress"
+                       Text="Total progress"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        
