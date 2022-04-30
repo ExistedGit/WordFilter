@@ -35,7 +35,7 @@ namespace WordFilter
                 OnPropertyChanged();
             }
         }
-
+        public event Action<MainWindow> SilentAllFilesCounted;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<Analyzer> Analyzers
         {
@@ -64,11 +64,14 @@ namespace WordFilter
             {
                 reportFolderPath = value;
 
-                CreateAnalyzers();
-                LB_Drives.ItemsSource = Analyzers;
+                if (Analyzers == null)
+                {
+                    CreateAnalyzers();
+                    LB_Drives.ItemsSource = Analyzers;
+                }
                 if (DEBUG)
                 {
-                    BannedStrings = new ObservableCollection<string>(new string[] { "Москва", "Кремль", "Путин" });
+                    BannedStrings = new ObservableCollection<string>(new string[] { "Москва", "Кремль", "Путин", "fuck" });
                     LB_BannedStrings.ItemsSource = BannedStrings;
                 }
                 OnPropertyChanged();
@@ -100,8 +103,6 @@ namespace WordFilter
         {
             Button button = (Button)sender;
             Analyzer analyzer = (Analyzer)button.Tag;
-
-
 
             if (analyzer.State != AnalyzerState.Running)
             {
@@ -146,20 +147,24 @@ namespace WordFilter
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.Filter = "WordFilter Config Files|*.wfc";
                 dialog.Title = "Открыть файл конфигурации...";
-                dialog.InitialDirectory = curFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
+                dialog.InitialDirectory = CurFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
+                dialog.Multiselect=false;
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (StreamReader reader = new StreamReader(dialog.FileName))
-                    {
-                        string text = reader.ReadToEnd().Trim();
-                        BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
-                        LB_BannedStrings.ItemsSource = BannedStrings;
-                        CurFilePath = dialog.FileName;
-                    }
+                    LoadWfc(dialog.FileName);
                 }
             }
         }
-
+        public void LoadWfc(string path)
+        {
+            using (StreamReader reader = new StreamReader(path))
+            {
+                string text = reader.ReadToEnd().Trim();
+                BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+                LB_BannedStrings.ItemsSource = BannedStrings;
+                CurFilePath = path;
+            }
+        }
         private void BTN_SelectFolderForReport_Click(object sender, RoutedEventArgs e)
         {
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
@@ -180,20 +185,20 @@ namespace WordFilter
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private void StartAllAnalyzersBTN(object sender, RoutedEventArgs e)
+        public void StartAllAnalyzersBTN(object sender, RoutedEventArgs e)
         {
             foreach (var a in Analyzers)
                 a.Start();
         }
 
-        private void StopAllAnalyzersBTN(object sender, RoutedEventArgs e)
+        public void StopAllAnalyzersBTN(object sender, RoutedEventArgs e)
         {
 
             foreach (var a in Analyzers)
                 a.Stop();
         }
 
-        private void PauseAllAnalyzers(object sender, RoutedEventArgs e)
+        public void PauseAllAnalyzers(object sender, RoutedEventArgs e)
         {
 
             foreach (var a in Analyzers)

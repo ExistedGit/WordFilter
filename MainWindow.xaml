@@ -252,7 +252,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0"
-                                               Text="{Binding Path=path}"
+                                               Text="{Binding Path=Path}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="20"

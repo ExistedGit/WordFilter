@@ -40,7 +40,7 @@ namespace WordFilter.Entities
         /// <summary>
         /// Путь к директории, которую необходимо проанализировать
         /// </summary>
-        public string path { get; private set; }
+        public string Path { get; private set; }
         public int TotalFileCount
         {
             get => totalFileCount;
@@ -57,15 +57,16 @@ namespace WordFilter.Entities
             set
             {
                 analyzedFileCount = value;
-                if (analyzedFileCount == TotalFileCount)
-                {
-                    State = AnalyzerState.Completed;
-                    Completed?.Invoke(this);
-                }
                 OnPropertyChanged();
+                if (totalFileCount!=0)
+                    if (analyzedFileCount == TotalFileCount)
+                    {
+                        State = AnalyzerState.Completed;
+                        Completed?.Invoke(this);
+                    }
             }
         }
-        public string Root => path;
+        public string Root => Path;
 
         public AnalyzerState State
         {
@@ -83,13 +84,13 @@ namespace WordFilter.Entities
                 throw new ArgumentOutOfRangeException("ANALYZER PATH WRONG");
 
             State = AnalyzerState.Stopped;
-            this.path = path;
+            this.Path = path;
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
         }
         public void CountFilesAsync()
         {
-            taskFileCount = Task.Factory.StartNew(() => CountFiles(path));
+            taskFileCount = Task.Factory.StartNew(() => CountFiles(Path));
         }
         /// <summary>
         /// Начать работу анализатора
@@ -156,24 +157,23 @@ namespace WordFilter.Entities
         {
             string dir = obj as string;
             string[] Catalogs = null;
-            try
-            {
-                Catalogs = Directory.GetDirectories(dir);
-            }
-            catch (Exception)
-            {
-                return;
-            }
-
-
-
+           
             try
             {
                 TotalFileCount += Directory.GetFiles(dir, "*.txt").Count();
             }
             catch (Exception)
             {
-
+                Console.WriteLine("tfc ex");
+            }
+            try
+            {
+                Catalogs = Directory.GetDirectories(dir);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("fuck");
+                return;
             }
             foreach (var catalog in Catalogs)
                 CountFiles(catalog, level + 1);
@@ -191,12 +191,12 @@ namespace WordFilter.Entities
         private void AnalyzeDirectory(object obj = null, int level = 0)
         {
             if (!Ready)
-                CountFiles(path);
+                CountFiles(Path);
             string dir = obj as string;
 
             if (dir == null)
             {
-                dir = path;
+                dir = Path;
             }
 
             string[] Catalogs = null;
@@ -215,7 +215,6 @@ namespace WordFilter.Entities
                 mre.WaitOne();
                 fileReports.Add(AnalyzeFile(item));
                 AnalyzedFileCount++;
-                Console.WriteLine(AnalyzedFileCount);
             }
 
             List<Task> subTasks = new List<Task>();
