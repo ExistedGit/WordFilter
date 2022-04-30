@@ -84,7 +84,7 @@ namespace WordFilter
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
 
-        private const bool DEBUG = true;
+        private const bool DEBUG = false;
 
         public bool AnalyzersLoaded { get => analyzersLoaded;
             private set { analyzersLoaded = value; OnPropertyChanged(); } }
