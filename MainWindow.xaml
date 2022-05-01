@@ -364,9 +364,8 @@
                            FontSize="18"
                            Foreground="#b0b0b0"/>
                 
-                <ListBox
-                         x:Name="LB_BannedStrings"
-                        ItemContainerStyle="{StaticResource LB_BannedStrStyle}"
+                <ListBox x:Name="LB_BannedStrings"
+                         ItemContainerStyle="{StaticResource LB_BannedStrStyle}"
                          Grid.Row="1" 
                          Background="#182533"
                          BorderThickness="0">
@@ -428,6 +427,7 @@
                 </Grid>
                 <UniformGrid Grid.Row="3" Columns="3" HorizontalAlignment="Center" Margin="15,5,15,5"
                             IsEnabled="{Binding AnalyzersLoaded}">
+                    
                     <Button Margin="0, 5, 5, 5"
                             Content="Start all"
                             Click="StartAllAnalyzersBTN"
