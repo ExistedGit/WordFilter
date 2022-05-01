@@ -26,7 +26,7 @@ namespace WordFilter
         {
             MainWindow wnd = new MainWindow();
             string[] args = e.Args;
-         //   args = new string[]{ "B:\\config.wfc", @"B:\Reports\"};
+            //args = new string[]{ "B:\\config.wfc", @"B:\Reports\"};
             if (args.Length == 0)
             {
                 wnd.Show();
@@ -43,6 +43,7 @@ namespace WordFilter
                 Directory.CreateDirectory(reportFolder);
 
                 wnd.LoadWfc(wfcPath);
+                wnd.ReportFolderPath = reportFolder;
                 wnd.CreateAnalyzers();
                 wnd.SilentAllFilesCounted += Wnd_SilentAllFilesCounted;
                 wnd.PropertyChanged += Wnd_PropertyChanged;
@@ -60,8 +61,7 @@ namespace WordFilter
             MainWindow wnd = sender as MainWindow;
             if (e.PropertyName == "AnalyzedFileCount")
             {
-                Console.Clear();
-                //Console.WriteLine((float)wnd.AnalyzedFileCount / (float)wnd.TotalFileCount);
+                Trace.WriteLine((wnd.AnalyzedFileCount / (float)wnd.TotalFileCount * 100).ToString("0.00") + "%");
                 if (wnd.AnalyzedFileCount == wnd.TotalFileCount)
                     Environment.Exit(0);
             }

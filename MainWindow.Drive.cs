@@ -21,17 +21,19 @@ namespace WordFilter
                 
                 if (drive.IsReady)
                 {
-                    if (DEBUG && !debugDrives.Contains(drive.Name))
+                    if (!debugDrives.Contains(drive.Name))
                         continue;
                     var analyzer = new Analyzer(drive.RootDirectory.FullName);
                     if(BannedStrings!= null)
                         analyzer.SetBannedStrings(BannedStrings);
+
                     analyzer.FilesCounted += Analyzer_FilesCounted;
                     analyzer.Completed += Analyzer_Completed;
                     analyzer.PropertyChanged += Analyzer_PropertyChanged;
                     Analyzers.Add(analyzer);
                 }
             };
+            LB_Drives.ItemsSource = Analyzers;
             foreach(var a in Analyzers)
             {
                 a.CountFilesAsync();
@@ -43,10 +45,6 @@ namespace WordFilter
             Analyzer analyzer = sender as Analyzer;
             if(e.PropertyName == "AnalyzedFileCount")
             {
-                if (analyzer.AnalyzedFileCount == 1795)
-                {
-
-                }
                 AnalyzedFileCount = Analyzers.Select(a => a.AnalyzedFileCount).Sum();
             }
         }
@@ -64,7 +62,7 @@ namespace WordFilter
                 }
                 catch (Exception)
                 {
-
+                    continue;
                 }
                 using(StreamWriter writer = new StreamWriter(Path.Combine(dir.FullName, report.Name + " FIXED.txt")))
                 {
