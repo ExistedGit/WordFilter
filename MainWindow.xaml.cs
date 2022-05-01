@@ -35,6 +35,32 @@ namespace WordFilter
                 OnPropertyChanged();
             }
         }
+        public bool FilesCounted
+        {
+            get => filesCounted;
+            set
+            {
+                filesCounted = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool ListLoaded
+        {
+            get => listLoaded;
+            set
+            {
+                listLoaded = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ReportFolderSelected
+        {
+            get => reportFolderSelected;
+            set { reportFolderSelected = value; OnPropertyChanged(); }
+        }
+
+        private bool reportFolderSelected = false;
         public event Action<MainWindow> SilentAllFilesCounted;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<Analyzer> Analyzers
@@ -62,12 +88,8 @@ namespace WordFilter
             get => reportFolderPath;
             set
             {
+                ReportFolderSelected = true;
                 reportFolderPath = value;
-                if (DEBUG)
-                {
-                    BannedStrings = new ObservableCollection<string>(new string[] { "Москва", "Кремль", "Путин", "fuck" });
-                    LB_BannedStrings.ItemsSource = BannedStrings;
-                }
                 OnPropertyChanged();
             }
 
@@ -78,10 +100,8 @@ namespace WordFilter
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
 
-        private const bool DEBUG = false;
+        private const bool DEBUG = true;
 
-        public bool AnalyzersLoaded { get => analyzersLoaded;
-            private set { analyzersLoaded = value; OnPropertyChanged(); } }
         public MainWindow()
         {
             InitializeComponent();
@@ -121,7 +141,8 @@ namespace WordFilter
 
         private string curFilePath = null;
         private ObservableCollection<Analyzer> analyzers;
-        private bool analyzersLoaded;
+        private bool filesCounted = false;
+        private bool listLoaded = false;
 
         public string CurFilePath
         {
@@ -142,7 +163,7 @@ namespace WordFilter
                 dialog.Filter = "WordFilter Config Files|*.wfc";
                 dialog.Title = "Открыть файл конфигурации...";
                 dialog.InitialDirectory = CurFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
-                dialog.Multiselect=false;
+                dialog.Multiselect = false;
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     LoadWfc(dialog.FileName);
@@ -158,6 +179,7 @@ namespace WordFilter
                 BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
                 LB_BannedStrings.ItemsSource = BannedStrings;
                 CurFilePath = path;
+                ListLoaded = true;
             }
         }
         private void BTN_SelectFolderForReport_Click(object sender, RoutedEventArgs e)

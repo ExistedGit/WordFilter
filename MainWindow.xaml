@@ -8,6 +8,7 @@
         Title="MainWindow" Height="600" Width="900"
         MinWidth="900"
         MinHeight="600">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
@@ -426,8 +427,17 @@
                             Click="BTN_SelectFolderForReport_Click"/>
                 </Grid>
                 <UniformGrid Grid.Row="3" Columns="3" HorizontalAlignment="Center" Margin="15,5,15,5"
-                            IsEnabled="{Binding AnalyzersLoaded}">
-                    
+                            >
+                    <UniformGrid.Resources>
+                        <entities:BooleanAndConverter x:Key="converter"/>
+                    </UniformGrid.Resources>
+                    <UniformGrid.IsEnabled>
+                        <MultiBinding Converter="{StaticResource converter}">
+                            <Binding Path="FilesCounted"></Binding>
+                            <Binding Path="ListLoaded"></Binding>
+                            <Binding Path="ReportFolderSelected"/>
+                        </MultiBinding>
+                    </UniformGrid.IsEnabled>
                     <Button Margin="0, 5, 5, 5"
                             Content="Start all"
                             Click="StartAllAnalyzersBTN"
@@ -458,6 +468,7 @@
                  ItemContainerStyle="{StaticResource LB_DriversStyle}"/>
 
         <Grid Grid.Row="3" Background="#202b36">
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="4*"></RowDefinition>
@@ -465,6 +476,13 @@
             </Grid.RowDefinitions>
 
 
+            <Grid.Resources>
+
+                <entities:EqualityConverter x:Key="equal"/>
+                <entities:GreaterThanConverter x:Key="greaterthan" Margin="0"/>
+                <entities:BooleanAndConverter x:Key="and"/>
+            </Grid.Resources>
+            
             <TextBlock Grid.Row="0"
                        Text="Total progress"
                        VerticalAlignment="Center"
@@ -473,19 +491,44 @@
                        Foreground="#b0b0b0"/>
 
 
+            <FrameworkElement x:Name="EqualCounts">
+                <FrameworkElement.Tag>
+                    <MultiBinding Converter="{StaticResource equal}">
+                        <Binding Path="TotalFileCount"/>
+                        <Binding Path="AnalyzedFileCount"/>
+                    </MultiBinding>
+                </FrameworkElement.Tag>
+            </FrameworkElement>
 
-                
             <ProgressBar Grid.Row="1"
                             Margin="10, 0"
                             Background="#202b36"
                             Maximum="{Binding TotalFileCount}"
-                            Value="{Binding AnalyzedFileCount}"
-                            Foreground="#768c9e"/>
+                            Value="{Binding AnalyzedFileCount}">
+                <ProgressBar.Style>
+                    <Style TargetType="{x:Type ProgressBar}">
+                        <Style.Setters>
+                            <Setter Property="Foreground" Value="#768c9e"/>
+                        </Style.Setters>
+                        <Style.Triggers>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource and}">
+                                        <Binding ElementName="EqualCounts" Path="Tag"/>
+                                        <Binding Path="TotalFileCount" Converter="{StaticResource greaterthan}"/>
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="Foreground" Value="LightGreen"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>    
+                </ProgressBar.Style>
+            </ProgressBar>
 
-           
-        
-            
-       
+
+
+
+
             <TextBlock Grid.Row="2"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"

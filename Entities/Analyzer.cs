@@ -44,7 +44,7 @@ namespace WordFilter.Entities
         public int TotalFileCount
         {
             get => totalFileCount;
-            private set
+            set
             {
                 totalFileCount = value;
                 OnPropertyChanged();
@@ -54,7 +54,7 @@ namespace WordFilter.Entities
         public int AnalyzedFileCount
         {
             get => analyzedFileCount;
-            private set
+            set
             {
                 analyzedFileCount = value;
                 OnPropertyChanged();
@@ -71,7 +71,7 @@ namespace WordFilter.Entities
         public AnalyzerState State
         {
             get => state;
-            private set
+            set
             {
                 state = value;
                 OnPropertyChanged();
@@ -225,7 +225,7 @@ namespace WordFilter.Entities
             foreach (var catalog in Catalogs)
                 if (Directory.Exists(catalog))
                 {
-                    if (level <= 2)
+                    if (level <= 1)
                         subTasks.Add(Task.Factory.StartNew(() => AnalyzeDirectory(catalog, level + 1)));
                     else
                         AnalyzeDirectory(catalog, level + 1);
@@ -241,7 +241,7 @@ namespace WordFilter.Entities
                 using (StreamReader reader = new StreamReader(path))
                 {
                     string text = reader.ReadToEnd().Trim();
-                    result.WordOccurences[bannedString] = Regex.Matches(text, $@"\b{bannedString}\b").Count;
+                    result.WordOccurences[bannedString] = Regex.Matches(text, $@"\b{bannedString}\b", RegexOptions.IgnoreCase).Count;
                 }
             }
             return result;

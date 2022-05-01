@@ -21,7 +21,7 @@ namespace WordFilter
                 
                 if (drive.IsReady)
                 {
-                    if (!debugDrives.Contains(drive.Name))
+                    if (DEBUG && !debugDrives.Contains(drive.Name))
                         continue;
                     var analyzer = new Analyzer(drive.RootDirectory.FullName);
                     if(BannedStrings!= null)
@@ -93,7 +93,7 @@ namespace WordFilter
             TotalFileCount += sender.TotalFileCount;
             if (Analyzers.Where(a => a.Ready).Count() == Analyzers.Count)
             {
-                AnalyzersLoaded = true;
+                FilesCounted = true;
                 SilentAllFilesCounted?.Invoke(this);
             }
         }
