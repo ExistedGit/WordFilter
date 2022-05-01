@@ -63,12 +63,6 @@ namespace WordFilter
             set
             {
                 reportFolderPath = value;
-
-                if (Analyzers == null)
-                {
-                    CreateAnalyzers();
-                    LB_Drives.ItemsSource = Analyzers;
-                }
                 if (DEBUG)
                 {
                     BannedStrings = new ObservableCollection<string>(new string[] { "Москва", "Кремль", "Путин", "fuck" });
@@ -84,7 +78,7 @@ namespace WordFilter
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
 
-        private const bool DEBUG = true;
+        private const bool DEBUG = false;
 
         public bool AnalyzersLoaded { get => analyzersLoaded;
             private set { analyzersLoaded = value; OnPropertyChanged(); } }
@@ -152,6 +146,7 @@ namespace WordFilter
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     LoadWfc(dialog.FileName);
+                    CreateAnalyzers();
                 }
             }
         }
