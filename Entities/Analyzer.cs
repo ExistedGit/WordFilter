@@ -44,7 +44,7 @@ namespace WordFilter.Entities
         public int TotalFileCount
         {
             get => totalFileCount;
-            set
+            private set
             {
                 totalFileCount = value;
                 OnPropertyChanged();
@@ -54,11 +54,11 @@ namespace WordFilter.Entities
         public int AnalyzedFileCount
         {
             get => analyzedFileCount;
-            set
+            private set
             {
                 analyzedFileCount = value;
                 OnPropertyChanged();
-                if (totalFileCount!=0)
+                if (totalFileCount != 0)
                     if (analyzedFileCount == TotalFileCount)
                     {
                         State = AnalyzerState.Completed;
@@ -101,7 +101,7 @@ namespace WordFilter.Entities
             if (State == AnalyzerState.Running)
                 return false;
             if (State == AnalyzerState.Stopped
-                || 
+                ||
                 State == AnalyzerState.Completed)
             {
                 fileReports.Clear();
@@ -134,17 +134,19 @@ namespace WordFilter.Entities
         {
             if (State == AnalyzerState.Stopped
                 ||
-                State ==AnalyzerState.Completed)
+                State == AnalyzerState.Completed)
                 return false;
             mre.Reset();
             thread.Abort();
             State = AnalyzerState.Stopped;
             return true;
         }
-        public bool Ready { get => ready; private set
+        public bool Ready
+        {
+            get => ready; private set
             {
                 ready = value;
-                OnPropertyChanged();    
+                OnPropertyChanged();
             }
         }
 
@@ -157,14 +159,16 @@ namespace WordFilter.Entities
         {
             string dir = obj as string;
             string[] Catalogs = null;
-           
+
             try
             {
-                TotalFileCount += Directory.GetFiles(dir, "*.txt").Count();
+                var info = new DirectoryInfo(dir);
+                info.Refresh();
+                TotalFileCount += info.GetFiles("*.txt").Count();
             }
             catch (Exception)
             {
-                Console.WriteLine("tfc ex");
+                return;
             }
             try
             {
@@ -172,7 +176,6 @@ namespace WordFilter.Entities
             }
             catch (Exception)
             {
-                Console.WriteLine("fuck");
                 return;
             }
             foreach (var catalog in Catalogs)

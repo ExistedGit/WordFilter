@@ -63,12 +63,6 @@ namespace WordFilter
             set
             {
                 reportFolderPath = value;
-
-                if (Analyzers == null)
-                {
-                    CreateAnalyzers();
-                    LB_Drives.ItemsSource = Analyzers;
-                }
                 if (DEBUG)
                 {
                     BannedStrings = new ObservableCollection<string>(new string[] { "Москва", "Кремль", "Путин", "fuck" });
@@ -152,6 +146,7 @@ namespace WordFilter
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     LoadWfc(dialog.FileName);
+                    CreateAnalyzers();
                 }
             }
         }
