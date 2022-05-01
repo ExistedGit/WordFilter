@@ -338,10 +338,13 @@
 
         <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0" BorderThickness="0">
 
-            <MenuItem Header="File" Height="25" Width="50" Click="MenuItem_Click" BorderThickness="0">
+            <MenuItem Header="File" Height="25" Width="50" BorderThickness="0">
                 <MenuItem Style="{StaticResource menuitem}" Name="OpenMenu" Header="Open list..."  Click="MenuItem_Click"/>
             </MenuItem>
 
+            <MenuItem Header="Help" Height="25" Width="50"  BorderThickness="0">
+                <MenuItem Style="{StaticResource menuitem}" Name="HelpMenu" Header="Manual"  Click="MenuItem_Click"/>
+            </MenuItem>
         </Menu>
 
         <Grid Grid.Row="1"
@@ -426,6 +429,19 @@
                             x:Name="BTN_SelectFolderForReport"
                             Click="BTN_SelectFolderForReport_Click"/>
                 </Grid>
+                <Button Grid.Row="2" HorizontalAlignment="Center" Width="80" Margin="5" Content="Rescan" FontSize="18"
+                        Click="RescanBTN">
+                    <Button.Resources>
+                        <entities:BooleanAndConverter x:Key="converter"/>
+                    </Button.Resources>
+                    <Button.IsEnabled>
+
+                        <MultiBinding Converter="{StaticResource converter}">
+                            <Binding Path="ListLoaded"></Binding>
+                            <Binding Path="ReportFolderSelected"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
                 <UniformGrid Grid.Row="3" Columns="3" HorizontalAlignment="Center" Margin="15,5,15,5"
                             >
                     <UniformGrid.Resources>
@@ -452,7 +468,7 @@
                             Content="Pause all"
                             FontSize="18"
                             Click="PauseAllAnalyzers"/>
-
+                    
                 </UniformGrid>
                 
             </Grid>

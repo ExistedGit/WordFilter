@@ -77,10 +77,10 @@ namespace WordFilter
             set
             {
                 bannedStrings = value;
+                OnPropertyChanged();
                 if (Analyzers != null)
                     foreach (var analyzer in Analyzers)
                         analyzer.SetBannedStrings(bannedStrings);
-                OnPropertyChanged();
             }
         }
         public string ReportFolderPath
@@ -169,6 +169,9 @@ namespace WordFilter
                     LoadWfc(dialog.FileName);
                     CreateAnalyzers();
                 }
+            } else if (item.Name.Equals("HelpMenu"))
+            {
+                MessageBox.Show("To start the analysis, select a report folder and open a .wfc file with a word list.\nTo create a word list, use WFCEditor(supplied with WordFilter).");
             }
         }
         public void LoadWfc(string path)
@@ -220,6 +223,18 @@ namespace WordFilter
 
             foreach (var a in Analyzers)
                 a.Pause();
+        }
+
+        private void RescanBTN(object sender, RoutedEventArgs e)
+        {
+            foreach (var a in Analyzers)
+                a.Stop();
+
+            TotalFileCount = 0;
+            AnalyzedFileCount = 0;
+
+
+            CreateAnalyzers();
         }
     }
 }

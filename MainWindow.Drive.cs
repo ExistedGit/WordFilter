@@ -35,9 +35,8 @@ namespace WordFilter
             };
             LB_Drives.ItemsSource = Analyzers;
             foreach(var a in Analyzers)
-            {
                 a.CountFilesAsync();
-            }
+            
         }
 
         private void Analyzer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
