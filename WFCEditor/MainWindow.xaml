@@ -204,7 +204,7 @@
                 
                 <Style.Triggers>
 
-                    <DataTrigger Binding="{Binding Path=isNeedSave, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="true"> 
+                    <DataTrigger Binding="{Binding Path=SaveNeeded, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="true"> 
                         <Setter Property="Header" Value="Save*"/>
                     </DataTrigger>
 
@@ -368,7 +368,7 @@
             
             <StatusBarItem>
                 <TextBlock x:Name="TB_CurrentPath"
-                           Text="{Binding CurrentOpendPath, UpdateSourceTrigger=PropertyChanged, TargetNullValue='Not opend'}"
+                           Text="{Binding CurrentPath, UpdateSourceTrigger=PropertyChanged, TargetNullValue='Not opend'}"
                            Foreground="#b0b0b0"
                            FontSize="10"/>
             </StatusBarItem>
