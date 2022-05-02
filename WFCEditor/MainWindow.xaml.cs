@@ -94,13 +94,25 @@ namespace WFCEditor
             LB_Elements.ItemsSource = NewElements;
             DataContext = this;
 
-            
+
+            string[] args = Environment.GetCommandLineArgs();
+
+            if(args.Length == 1)
+            {
+
+                if (File.Exists(args[0]) && Path.GetExtension(args[0]) == ".wfc")
+                    CurrentPath = args[0];
+
+            }
+                
+
+
             RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
             
             if(rk == null)
-            {
                 rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
-            }
+
+
             if (rk.GetValue("Default") != null)
                 if ((string)rk.GetValue("Default") != $"\"{Application.Current}\" %1")
                     rk.SetValue("Default", $"\"{Application.Current}\" %1");
