@@ -89,6 +89,18 @@ namespace WordFilter
             AnalyzedFileCount = 0;
 
             DataContext = this;
+
+            RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
+
+            if (rk == null)
+            {
+                rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
+            }
+            if (rk.GetValue("Default") != null)
+                if ((string)rk.GetValue("Default") != $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" %1")
+                    rk.SetValue("Default", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" %1");
+
+            rk.Close();
         }
 
 

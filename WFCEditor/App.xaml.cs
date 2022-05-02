@@ -13,5 +13,10 @@ namespace WFCEditor
     /// </summary>
     public partial class App : Application
     {
+        public static void Main(object sender, StartupEventArgs e)
+        {
+            MainWindow wnd = new MainWindow();
+            string[] args = e.Args;
+        }
     }
 }

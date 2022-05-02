@@ -17,21 +17,21 @@ namespace WFCEditor
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private bool isOpendFromFile;
-        private string currentOpendPath;
+        private bool isOpenedFromFile;
+        private string curPath;
 
         public ObservableCollection<string> OldElements { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> NewElements { get; set; } = new ObservableCollection<string>();
-        public string CurrentOpendPath
+        public string CurrentPath
         {
-            get => currentOpendPath;
+            get => curPath;
             set
             {
-                currentOpendPath = value;
+                curPath = value;
                 OnPropertyChanged();
             }
         }
-        public bool isNeedSave
+        public bool SaveNeeded
         {
             get
             {
@@ -74,13 +74,13 @@ namespace WFCEditor
                 return false;
             }
         }
-        public bool IsOpendFromFile
+        public bool IsOpenedFromFile
         {
-            get => isOpendFromFile;
+            get => isOpenedFromFile;
             set
             {
-                isOpendFromFile = value;
-                OnPropertyChanged("IsNeedSave");
+                isOpenedFromFile = value;
+                OnPropertyChanged("SaveNeeded");
             }
         }
         public string NewElement { get; set; }
@@ -96,18 +96,16 @@ namespace WFCEditor
 
             
             RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
-
+            
             if(rk == null)
             {
                 rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
             }
-
             if (rk.GetValue("Default") != null)
                 if ((string)rk.GetValue("Default") != $"\"{Application.Current}\" %1")
                     rk.SetValue("Default", $"\"{Application.Current}\" %1");
-       
 
-            
+            rk.Close();
         }
 
         
@@ -182,9 +180,9 @@ namespace WFCEditor
         private void MenuItemOpenAs_Click(object sender, RoutedEventArgs e)
         {
            
-            if(isNeedSave && MessageBox.Show("You have not saved information. Save?", "info", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if(SaveNeeded && MessageBox.Show("You have not saved information. Save?", "info", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if (isOpendFromFile)
+                if (isOpenedFromFile)
                 {
                     Save();
                 }
@@ -198,8 +196,8 @@ namespace WFCEditor
 
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "WordFilter Config Files|*.wfc";
-            ofd.Title = "Open wfc file as...";
-            ofd.InitialDirectory = CurrentOpendPath ?? AppDomain.CurrentDomain.BaseDirectory;
+            ofd.Title = "Open WFC file as...";
+            ofd.InitialDirectory = CurrentPath ?? AppDomain.CurrentDomain.BaseDirectory;
 
             if(ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK) 
             {
@@ -220,8 +218,8 @@ namespace WFCEditor
 
                 }
 
-                CurrentOpendPath = ofd.FileName;
-                isOpendFromFile = true;
+                CurrentPath = ofd.FileName;
+                isOpenedFromFile = true;
 
 
             }
@@ -231,12 +229,12 @@ namespace WFCEditor
 
         private bool Save()
         {
-            if(!isOpendFromFile || !isNeedSave)
+            if(!isOpenedFromFile || !SaveNeeded)
                 return false;
 
             try
             {
-                using (StreamWriter writer = new StreamWriter(CurrentOpendPath))
+                using (StreamWriter writer = new StreamWriter(CurrentPath))
                     foreach (string s in NewElements)
                         writer.WriteLine(s);
             }
@@ -256,8 +254,8 @@ namespace WFCEditor
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "WordFilter Config Files|*.wfc";
-            sfd.Title = "Save wfc file as...";
-            sfd.InitialDirectory = CurrentOpendPath ?? AppDomain.CurrentDomain.BaseDirectory;
+            sfd.Title = "Save WFC file as...";
+            sfd.InitialDirectory = CurrentPath ?? AppDomain.CurrentDomain.BaseDirectory;
 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -266,8 +264,8 @@ namespace WFCEditor
                     foreach (string s in NewElements)
                         writer.WriteLine(s);
 
-                    CurrentOpendPath = sfd.FileName;
-                    isOpendFromFile = true;
+                    CurrentPath = sfd.FileName;
+                    isOpenedFromFile = true;
                     return true;
                 }
 
@@ -302,7 +300,7 @@ namespace WFCEditor
         private void MenuItemSave_Click(object sender, RoutedEventArgs e)
         {
 
-            if (isOpendFromFile)
+            if (isOpenedFromFile)
                 Save();
             else
                 SaveAs();
