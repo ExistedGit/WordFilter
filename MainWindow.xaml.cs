@@ -9,12 +9,14 @@ using WordFilter.Entities;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Management;
 
 namespace WordFilter
 {
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+
         public int TotalFileCount
         {
             get => totalFileCount;
@@ -33,24 +35,60 @@ namespace WordFilter
                 OnPropertyChanged();
             }
         }
+        public bool FilesCounted
+        {
+            get => filesCounted;
+            set
+            {
+                filesCounted = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool ListLoaded
+        {
+            get => listLoaded;
+            set
+            {
+                listLoaded = value;
+                OnPropertyChanged();
+            }
+        }
 
+        public bool ReportFolderSelected
+        {
+            get => reportFolderSelected;
+            set { reportFolderSelected = value; OnPropertyChanged(); }
+        }
+
+        private bool reportFolderSelected = false;
+        public event Action<MainWindow> SilentAllFilesCounted;
         public event PropertyChangedEventHandler PropertyChanged;
-        public ObservableCollection<Analyzer> Analyzers { get; set; }
-        public ObservableCollection<string> BannedStrings { 
-            get => bannedStrings; 
-            set { 
+        public ObservableCollection<Analyzer> Analyzers
+        {
+            get => analyzers; set
+            {
+                analyzers = value;
+                OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<string> BannedStrings
+        {
+            get => bannedStrings;
+            set
+            {
                 bannedStrings = value;
+                OnPropertyChanged();
                 if (Analyzers != null)
                     foreach (var analyzer in Analyzers)
                         analyzer.SetBannedStrings(bannedStrings);
-                OnPropertyChanged();
-            } 
+            }
         }
         public string ReportFolderPath
         {
             get => reportFolderPath;
-            set 
+            set
             {
+                ReportFolderSelected = true;
                 reportFolderPath = value;
                 OnPropertyChanged();
             }
@@ -62,7 +100,7 @@ namespace WordFilter
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
 
-
+        private const bool DEBUG = true;
 
         public MainWindow()
         {
@@ -71,21 +109,26 @@ namespace WordFilter
             AnalyzedFileCount = 0;
 
             DataContext = this;
-            LB_Drives.ItemsSource = Analyzers = CreateAnalyzers();
         }
 
 
-     
+
         private void BTN_PauseOrResumeAnalyzer_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             Analyzer analyzer = (Analyzer)button.Tag;
-            
-            if(analyzer.State == Analyzer.AnalyzerState.Paused)
+
+            if (analyzer.State != AnalyzerState.Running)
+            {
+                if (analyzer.BannedStrings == null)
+                {
+                    MessageBox.Show("Перед началом анализа загрузите список запрещённых слов.");
+                    return;
+                }
                 analyzer.Start();
+            }
             else
-                if(analyzer.State == Analyzer.AnalyzerState.Running)
-                    analyzer.Pause();
+                analyzer.Pause();
 
         }
 
@@ -93,20 +136,23 @@ namespace WordFilter
         {
             Button button = (Button)sender;
             Analyzer analyzer = (Analyzer)button.Tag;
-
-            if (analyzer.State == Analyzer.AnalyzerState.Running)
-                analyzer.Stop();
+            analyzer.Stop();
         }
 
         private string curFilePath = null;
-        public string CurFilePath 
-        { 
-            get => curFilePath; 
-            private set {
+        private ObservableCollection<Analyzer> analyzers;
+        private bool filesCounted = false;
+        private bool listLoaded = false;
+
+        public string CurFilePath
+        {
+            get => curFilePath;
+            private set
+            {
                 curFilePath = value; OnPropertyChanged();
             }
         }
-        
+
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)sender;
@@ -116,37 +162,29 @@ namespace WordFilter
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.Filter = "WordFilter Config Files|*.wfc";
                 dialog.Title = "Открыть файл конфигурации...";
-                dialog.InitialDirectory = curFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
+                dialog.InitialDirectory = CurFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
+                dialog.Multiselect = false;
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (StreamReader reader = new StreamReader(dialog.FileName))
-                    {
-                        string text = reader.ReadToEnd().Trim();
-                        BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
-                        LB_BannedStrings.ItemsSource = BannedStrings;
-                        CurFilePath = dialog.FileName;
-                    }
+                    LoadWfc(dialog.FileName);
+                    CreateAnalyzers();
                 }
-            }
-            else if (item.Name.Equals("SaveMenu"))
+            } else if (item.Name.Equals("HelpMenu"))
             {
-                using (StreamWriter writer = new StreamWriter(CurFilePath))
-                    foreach (string s in BannedStrings)
-                        writer.WriteLine(s);
-            }
-            else if (item.Name.Equals("SaveAsMenu"))
-            {
-                SaveFileDialog dialog = new SaveFileDialog();
-                dialog.Filter = "WordFilter Config Files|*.wfc";
-                dialog.Title = "Открыть файл конфигурации как...";
-                dialog.InitialDirectory = CurFilePath ?? AppDomain.CurrentDomain.BaseDirectory;
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    using (StreamWriter writer = new StreamWriter(dialog.FileName))
-                        foreach (string s in BannedStrings)
-                            writer.WriteLine(s);
+                MessageBox.Show("To start the analysis, select a report folder and open a .wfc file with a word list.\nTo create a word list, use WFCEditor(supplied with WordFilter).");
             }
         }
-
+        public void LoadWfc(string path)
+        {
+            using (StreamReader reader = new StreamReader(path))
+            {
+                string text = reader.ReadToEnd().Trim();
+                BannedStrings = new ObservableCollection<string>(text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+                LB_BannedStrings.ItemsSource = BannedStrings;
+                CurFilePath = path;
+                ListLoaded = true;
+            }
+        }
         private void BTN_SelectFolderForReport_Click(object sender, RoutedEventArgs e)
         {
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
@@ -165,6 +203,38 @@ namespace WordFilter
         private void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public void StartAllAnalyzersBTN(object sender, RoutedEventArgs e)
+        {
+            foreach (var a in Analyzers)
+                a.Start();
+        }
+
+        public void StopAllAnalyzersBTN(object sender, RoutedEventArgs e)
+        {
+
+            foreach (var a in Analyzers)
+                a.Stop();
+        }
+
+        public void PauseAllAnalyzers(object sender, RoutedEventArgs e)
+        {
+
+            foreach (var a in Analyzers)
+                a.Pause();
+        }
+
+        private void RescanBTN(object sender, RoutedEventArgs e)
+        {
+            foreach (var a in Analyzers)
+                a.Stop();
+
+            TotalFileCount = 0;
+            AnalyzedFileCount = 0;
+
+
+            CreateAnalyzers();
         }
     }
 }

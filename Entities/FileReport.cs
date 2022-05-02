@@ -7,24 +7,27 @@ using System.Xml.Serialization;
 namespace WordFilter.Entities
 {
     [Serializable]
+
+    [XmlRoot("report")]
     public class FileReport
     {
 
         [XmlAttribute("Path")]
-        public string FullPath { get; private set; }
-
-        [XmlIgnore()]
+        public string FullPath { get; set; }
+        [XmlIgnore]
         public string Name 
         { 
             get => new FileInfo(FullPath).Name;
         }
 
+        [XmlIgnore]
         public readonly Dictionary<string, int> WordOccurences = new Dictionary<string, int>();
         
         [XmlElement("WordOccurences")]
         public WordCounter[] WordOccurenceAttribute
         { 
             get => WordOccurences.Select(pair => new WordCounter(pair.Key, pair.Value)).ToArray();
+            set { }
         }    
         
         /// <summary>

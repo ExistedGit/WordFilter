@@ -6,11 +6,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WordFilter.Entities
 {
-    public class Analyzer : INotifyPropertyChanged
+    public partial class Analyzer : INotifyPropertyChanged
     {
+
+        public event Action<Analyzer> FilesCounted;
+        public event Action<Analyzer> Completed;
+
         private int totalFileCount;
         private int analyzedFileCount;
         private AnalyzerState state;
@@ -28,8 +33,14 @@ namespace WordFilter.Entities
         /// Главный поток, в котором выполняется анализ
         /// </summary>
         private Thread thread = null;
+        private Task taskFileCount = null;
+        private ManualResetEvent mre = new ManualResetEvent(false);
+        private bool ready;
 
-        public string path { get; private set; }
+        /// <summary>
+        /// Путь к директории, которую необходимо проанализировать
+        /// </summary>
+        public string Path { get; private set; }
         public int TotalFileCount
         {
             get => totalFileCount;
@@ -47,20 +58,20 @@ namespace WordFilter.Entities
             {
                 analyzedFileCount = value;
                 OnPropertyChanged();
+                if (totalFileCount != 0)
+                    if (analyzedFileCount == TotalFileCount)
+                    {
+                        State = AnalyzerState.Completed;
+                        Completed?.Invoke(this);
+                    }
             }
         }
-        public string RootName => Path.GetDirectoryName(path);
-        public enum AnalyzerState
-        {
-            Running,
-            Paused,
-            Stopped
-        }
+        public string Root => Path;
 
         public AnalyzerState State
         {
-            get => state;   
-            private set
+            get => state;
+            set
             {
                 state = value;
                 OnPropertyChanged();
@@ -70,12 +81,16 @@ namespace WordFilter.Entities
         public Analyzer(string path)
         {
             if (!Directory.Exists(path))
-                throw new ArgumentOutOfRangeException("path");
+                throw new ArgumentOutOfRangeException("ANALYZER PATH WRONG");
 
             State = AnalyzerState.Stopped;
-            this.path = path;
+            this.Path = path;
             TotalFileCount = 0;
             AnalyzedFileCount = 0;
+        }
+        public void CountFilesAsync()
+        {
+            taskFileCount = Task.Factory.StartNew(() => CountFiles(Path));
         }
         /// <summary>
         /// Начать работу анализатора
@@ -85,15 +100,18 @@ namespace WordFilter.Entities
         {
             if (State == AnalyzerState.Running)
                 return false;
-            if (State == AnalyzerState.Stopped)
+            if (State == AnalyzerState.Stopped
+                ||
+                State == AnalyzerState.Completed)
             {
-                thread = new Thread(new ThreadStart(()=> AnalyzeDirectory()));
+                fileReports.Clear();
+                AnalyzedFileCount = 0;
+                thread = new Thread(new ThreadStart(() => AnalyzeDirectory()));
                 thread.IsBackground = true;
                 thread.Start();
             }
-            else if (State == AnalyzerState.Paused)
-                thread.Resume();
             State = AnalyzerState.Running;
+            mre.Set();
             return true;
         }
         /// <summary>
@@ -104,8 +122,8 @@ namespace WordFilter.Entities
         {
             if (State != AnalyzerState.Running)
                 return false;
-            thread.Suspend();
             State = AnalyzerState.Paused;
+            mre.Reset();
             return false;
         }
         /// <summary>
@@ -114,16 +132,44 @@ namespace WordFilter.Entities
         /// <returns>Удалось ли выполнить метод</returns>
         public bool Stop()
         {
-            if (State == AnalyzerState.Stopped)
+            if (State == AnalyzerState.Stopped
+                ||
+                State == AnalyzerState.Completed)
                 return false;
+            mre.Reset();
             thread.Abort();
-
             State = AnalyzerState.Stopped;
             return true;
         }
-        private void CountFiles(string dir)
+        public bool Ready
         {
+            get => ready; private set
+            {
+                ready = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Считает файлы в папке
+        /// </summary>
+        /// <param name="obj">Путь к папке</param>
+        /// <param name="level">Уровень вложения</param>
+        private void CountFiles(object obj, int level = 0)
+        {
+            string dir = obj as string;
             string[] Catalogs = null;
+
+            try
+            {
+                var info = new DirectoryInfo(dir);
+                info.Refresh();
+                TotalFileCount += info.GetFiles("*.txt").Count();
+            }
+            catch (Exception)
+            {
+                return;
+            }
             try
             {
                 Catalogs = Directory.GetDirectories(dir);
@@ -132,71 +178,70 @@ namespace WordFilter.Entities
             {
                 return;
             }
-
-            
-
-            try
-            {
-                TotalFileCount += Directory.GetFiles(dir, "*.txt").Count();
-            }
-            catch (Exception)
-            {
-
-            }
             foreach (var catalog in Catalogs)
-                CountFiles(catalog);
+                CountFiles(catalog, level + 1);
+            if (level == 0)
+            {
+                Ready = true;
+                FilesCounted?.Invoke(this);
+            }
         }
-        private void AnalyzeDirectory(object obj = null, int level = 0) 
+        /// <summary>
+        /// Рекурсивно анализирует папку
+        /// </summary>
+        /// <param name="obj">Строка с путём к папке(object из-за потоков)</param>
+        /// <param name="level">Уровень вложенности, от которого зависит создание новых потоков</param>
+        private void AnalyzeDirectory(object obj = null, int level = 0)
         {
+            if (!Ready)
+                CountFiles(Path);
             string dir = obj as string;
 
             if (dir == null)
             {
-                dir = path;
-                CountFiles(dir);
+                dir = Path;
             }
 
             string[] Catalogs = null;
+            string[] files = null;
             try
             {
                 Catalogs = Directory.GetDirectories(dir);
+                files = Directory.GetFiles(dir, "*.txt");
             }
-            catch (Exception)  {
+            catch (Exception)
+            {
                 return;
             }
-            string[] files = Directory.GetFiles(dir, "*.txt");
-
             foreach (var item in files)
             {
+                mre.WaitOne();
                 fileReports.Add(AnalyzeFile(item));
                 AnalyzedFileCount++;
             }
 
+            List<Task> subTasks = new List<Task>();
+            // Если уровень вложения больше двух, новый поток на папку не создаётся.
             foreach (var catalog in Catalogs)
-                if (Directory.Exists(catalog)) {
-                    if (level <= 2)
-                    {
-                        Thread subThread = new Thread(new ThreadStart(() => AnalyzeDirectory(catalog, level + 1)));
-                        subThread.IsBackground = true;
-                        subThread.Start();
-                    }
+                if (Directory.Exists(catalog))
+                {
+                    if (level <= 1)
+                        subTasks.Add(Task.Factory.StartNew(() => AnalyzeDirectory(catalog, level + 1)));
                     else
                         AnalyzeDirectory(catalog, level + 1);
                 }
-
-            
         }
 
         private FileReport AnalyzeFile(string path)
         {
             FileReport result = new FileReport(path);
-            
+
             foreach (var bannedString in BannedStrings)
             {
-                using (StreamReader reader = new StreamReader(path)) {
-
-                    string text = reader.ReadToEnd();
-                    result.WordOccurences[bannedString] = Regex.Matches(text, $@"\b{bannedString}\b").Count;
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    string text = reader.ReadToEnd().Trim();
+                    result.WordOccurences[bannedString] = Regex.Matches(text, $@"\b{bannedString}\b", RegexOptions.IgnoreCase).Count;
                 }
             }
             return result;
@@ -210,7 +255,7 @@ namespace WordFilter.Entities
 
 
         private void OnPropertyChanged([CallerMemberName] string name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }
