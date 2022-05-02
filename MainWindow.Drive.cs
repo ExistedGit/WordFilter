@@ -21,7 +21,7 @@ namespace WordFilter
                 
                 if (drive.IsReady)
                 {
-                    if (DEBUG && !debugDrives.Contains(drive.Name))
+                    if (!debugDrives.Contains(drive.Name))
                         continue;
                     var analyzer = new Analyzer(drive.RootDirectory.FullName);
                     if(BannedStrings!= null)
@@ -35,8 +35,9 @@ namespace WordFilter
             };
             LB_Drives.ItemsSource = Analyzers;
             foreach(var a in Analyzers)
+            {
                 a.CountFilesAsync();
-            
+            }
         }
 
         private void Analyzer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

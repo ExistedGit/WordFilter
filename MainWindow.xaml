@@ -100,13 +100,11 @@
             </Style>
             <Style x:Key="ResumeAndPauseAnalysisBTN" TargetType="Button">
                 <Style.Resources>
-                    <Image x:Key="start"  Source="Resources/start.png" Margin="3"></Image>
                 </Style.Resources>
                 <Style.Setters>
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-
+                            <ControlTemplate TargetType="Button" x:Name="sss">
                                 <Border BorderBrush="#b0b0b0"  
                                         BorderThickness="2"
                                         x:Name="Border">
@@ -114,14 +112,12 @@
                                         <Color x:Key="BackgroundClickColor" >#020d1d</Color>
                                         <Color x:Key="BackgroundHoverColor" >#131e2e</Color>
                                         <Color x:Key="BackgroundNormalColor" >#242f3f</Color>
+
                                     </Border.Resources>
 
                                     <Border.Background>
                                         <SolidColorBrush x:Name="BackgroundBrush" Color="#242f3f"/>
                                     </Border.Background>
-
-                                    <ContentPresenter VerticalAlignment="Center"
-                                                      HorizontalAlignment="Center"                                                    />
 
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup x:Name="CommonStates">
@@ -138,36 +134,42 @@
                                             </VisualState>
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
+                                    <Grid>
 
+                                        <Image x:Name="startimg"   Margin="3">
+                                            <Image.Style>
+
+                                                <Style TargetType="Image">
+                                                    <Style.Setters>
+                                                        <Setter Property="Source" Value="Resources/start.png"></Setter>
+                                                    </Style.Setters>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Running}">
+                                                            <Setter Property="Source" Value="Resources/pause.png"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                    </Grid>
                                 </Border>
-
-
-                                
                             </ControlTemplate>
                         </Setter.Value>
 
                     </Setter>
+
                     <Setter Property="Foreground" Value="#c1c1c1"/>
-                    <Setter Property="Content" Value="{StaticResource start}"></Setter>                
                 </Style.Setters>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Path=Ready}" Value="False">
                         <Setter Property="IsEnabled" Value="False"></Setter>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=State}" Value="{x:Static entities:AnalyzerState.Running}">
-                        <Setter Property="Content">
-                            <Setter.Value>
-                                <Image Source="Resources/pause.png" Margin="3"></Image>
-                            </Setter.Value>
-                        </Setter>
-                    </DataTrigger>
-                    
                 </Style.Triggers>
             </Style>
 
             <Style TargetType="Button">
                 <Style.Setters>
-                    
+
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
@@ -183,7 +185,7 @@
                                         <Color x:Key="BorderColor">#b0b0b0</Color>
                                         <Color x:Key="BorderDisabledColor">#b0b0b0</Color>
                                     </Border.Resources>
-                                    
+
                                     <Border.Background>
                                         <SolidColorBrush x:Name="BackgroundBrush" Color="#242f3f"/>
                                     </Border.Background>
@@ -192,7 +194,7 @@
                                     </Border.BorderBrush>
                                     <ContentPresenter VerticalAlignment="Center"
                                                       HorizontalAlignment="Center"                                                    />
-                                    
+
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup x:Name="CommonStates">
                                             <VisualState x:Name="Normal"/>
@@ -208,7 +210,7 @@
                                             </VisualState>
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
-                                    
+
                                 </Border>
 
 
@@ -238,7 +240,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            
+
             <Style TargetType="ListBoxItem" x:Key="LB_DriversStyle">
                 <Style.Setters>
                     <Setter Property="Template">
@@ -277,7 +279,7 @@
                                         <TextBlock VerticalAlignment="Top"
                                                    HorizontalAlignment="Center"
                                                    Foreground="#b0b0b0"
-                                                   Grid.Row="1">    
+                                                   Grid.Row="1">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0} / {1}">
                                                     <Binding Path="AnalyzedFileCount" UpdateSourceTrigger="PropertyChanged"/>
@@ -317,24 +319,24 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    
+
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style.Setters>
             </Style>
-            
+
             <Style  TargetType="ListBoxItem"  x:Key="LB_BannedStrStyle">
                 <Style.Setters>
                     <Setter Property="Margin" Value="3,3,3,3"/>
                     <Setter Property="Foreground" Value="#879daf"/>
                     <Setter Property="Background" Value="#202b36"/>
                 </Style.Setters>
-                
+
             </Style>
 
 
 
         </Grid.Resources>
-        
+
 
         <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0" BorderThickness="0">
 
@@ -367,13 +369,13 @@
                            Margin="10"
                            FontSize="18"
                            Foreground="#b0b0b0"/>
-                
+
                 <ListBox x:Name="LB_BannedStrings"
                          ItemContainerStyle="{StaticResource LB_BannedStrStyle}"
                          Grid.Row="1" 
                          Background="#182533"
                          BorderThickness="0">
-                    
+
                 </ListBox>
                 <TextBlock Text="{Binding CurFilePath, TargetNullValue=Open a .wfc file}"
                     VerticalAlignment="Center"
@@ -382,7 +384,7 @@
                     FontSize="12"
                     Foreground="#b0b0b0"/>
             </Grid>
-            
+
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
@@ -458,19 +460,19 @@
                             Content="Start all"
                             Click="StartAllAnalyzersBTN"
                             FontSize="18"/>
-                    
+
                     <Button Margin="0, 5, 0, 5"
                             Content="Stop all"
                             FontSize="18"
                             Click="StopAllAnalyzersBTN"/>
-                    
+
                     <Button Margin="5, 5, 0, 5"
                             Content="Pause all"
                             FontSize="18"
                             Click="PauseAllAnalyzers"/>
-                    
+
                 </UniformGrid>
-                
+
             </Grid>
 
         </Grid>
@@ -484,7 +486,7 @@
                  ItemContainerStyle="{StaticResource LB_DriversStyle}"/>
 
         <Grid Grid.Row="3" Background="#202b36">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="4*"></RowDefinition>
@@ -498,7 +500,7 @@
                 <entities:GreaterThanConverter x:Key="greaterthan" Margin="0"/>
                 <entities:BooleanAndConverter x:Key="and"/>
             </Grid.Resources>
-            
+
             <TextBlock Grid.Row="0"
                        Text="Total progress"
                        VerticalAlignment="Center"
@@ -537,7 +539,7 @@
                                 <Setter Property="Foreground" Value="LightGreen"></Setter>
                             </DataTrigger>
                         </Style.Triggers>
-                    </Style>    
+                    </Style>
                 </ProgressBar.Style>
             </ProgressBar>
 
@@ -556,9 +558,9 @@
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
-            
+
         </Grid>
-        
-        
+
+
     </Grid>
 </Window>
