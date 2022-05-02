@@ -26,12 +26,6 @@ namespace WordFilter
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
 
-        public enum WFERR
-        {
-            Success = 0,
-            InvalidArgCount = -1,
-            MissingDirectory = 1
-        }
         // wordfilter.exe [WFC FILE] [OUTPUT FOLDER]
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -42,6 +36,19 @@ namespace WordFilter
             {
                 var handle = GetConsoleWindow();
                 ShowWindow(handle, SW_HIDE);
+                wnd.Show();
+            }
+
+            else if (args.Length == 1) // Из контекстного меню для открытия WFC
+            {
+                string wfcPath = args[0];
+                if (!File.Exists(wfcPath))
+                    Environment.Exit(0);
+
+                var handle = GetConsoleWindow();
+                ShowWindow(handle, SW_HIDE);
+
+                wnd.LoadWfc(wfcPath);
                 wnd.Show();
             }
             else if (args.Length == 2)
