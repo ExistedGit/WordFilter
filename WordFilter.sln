@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{6949733D-45ED-41E0-9743-EEAA059B995A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFCEditor", "..\WFCEditor\WFCEditor.csproj", "{5D192EAA-0009-4688-80A1-A2CB8C97F89D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFCEditor", "WFCEditor\WFCEditor.csproj", "{5D192EAA-0009-4688-80A1-A2CB8C97F89D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,7 +21,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BD01988C-814C-44E1-A062-FB5577698336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD01988C-814C-44E1-A062-FB5577698336}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD01988C-814C-44E1-A062-FB5577698336}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD01988C-814C-44E1-A062-FB5577698336}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6949733D-45ED-41E0-9743-EEAA059B995A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -229,6 +229,7 @@
             <Style TargetType="MenuItem" x:Key="menuitem">
                 <Setter Property="Background" Value="#202b36"/>
                 <Setter Property="Foreground" Value="#879daf"/>
+                <Setter Property="BorderThickness" Value="0"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="true">
                         <Setter Property="Background" Value="#879daf" />
@@ -334,12 +335,27 @@
             </Style>
 
 
+            <Style TargetType="Menu" x:Key="menu">
+                <Setter Property="Foreground" Value="#b0b0b0"/>
+                <Setter Property="OverridesDefaultStyle" Value="True"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Menu}">
+                            <Border BorderThickness="0" Background="#242f3d">
+                                <StackPanel ClipToBounds="True"
+                                Orientation="Horizontal"
+                                IsItemsHost="True" />
+                            </Border>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
         </Grid.Resources>
 
 
-        <Menu IsMainMenu="True" Background="#242f3d" Foreground="#b0b0b0" BorderThickness="0">
-
+        <Menu IsMainMenu="True"   BorderThickness="0" Style="{StaticResource menu}">
             <MenuItem Header="File" Height="25" Width="50" BorderThickness="0">
                 <MenuItem Style="{StaticResource menuitem}" Name="OpenMenu" Header="Open list..."  Click="MenuItem_Click"/>
             </MenuItem>
