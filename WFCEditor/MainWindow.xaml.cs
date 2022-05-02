@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -93,6 +94,20 @@ namespace WFCEditor
             LB_Elements.ItemsSource = NewElements;
             DataContext = this;
 
+            
+            RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
+
+            if(rk == null)
+            {
+                rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
+            }
+
+            if (rk.GetValue("Default") != null)
+                if ((string)rk.GetValue("Default") != $"\"{Application.Current}\" %1")
+                    rk.SetValue("Default", $"\"{Application.Current}\" %1");
+       
+
+            
         }
 
         
