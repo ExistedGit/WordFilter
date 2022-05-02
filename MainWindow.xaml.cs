@@ -117,18 +117,17 @@ namespace WordFilter
 
             DataContext = this;
 
-            RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WordFilter\\Command");
+            RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WordFilter\\Command", true);
 
             if (rk == null)
             {
-                rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WordFilter\\Command");
+                rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WordFilter\\Command", true);
             }
-            if (rk.GetValue("") != null)
-            {
+            if (rk.GetValue("") == null)
+                    rk.SetValue("", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"", RegistryValueKind.String);
+            else
                 if ((string)rk.GetValue("") != $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"")
-                    rk.SetValue("", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"");
-            } else
-                rk.SetValue("", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"");
+                    rk.SetValue("", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"", RegistryValueKind.String);
             rk.Close();
             SHChangeNotify(0x08000000, 0x0000, IntPtr.Zero, IntPtr.Zero);
         }

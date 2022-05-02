@@ -116,7 +116,7 @@
                                     <DataTrigger Binding="{Binding Path=SelectedIndex,ElementName=LB_Elements}" Value="-1">
                                         <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
-                                    
+
                                 </ControlTemplate.Triggers>
 
                             </ControlTemplate>
@@ -176,22 +176,42 @@
                     <Setter Property="Foreground" Value="#c1c1c1"/>
                 </Style.Setters>
             </Style>
-
-            <Style TargetType="MenuItem">
-                <Setter Property="Background" Value="#242f3d"/>
+            <Style TargetType="MenuItem" >
+                <Setter Property="Background" Value="#182533"/>
                 <Setter Property="Foreground" Value="#b0b0b0"/>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="Background" Value="#879daf" />
-                        <Setter Property="Foreground" Value="#202b36"/>
-                    </Trigger>
-                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                        <Setter Property="Background" Value="#879daf" />
-                        <Setter Property="Foreground" Value="#202b36"/>
-                    </Trigger>
-                  
-                </Style.Triggers>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type MenuItem}">
+                            <Border x:Name="MenuItemBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}">
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter  Content="{TemplateBinding Header}" ContentSource="Header" 
+                                                       Margin="4, 2, 4, 2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    <Popup AllowsTransparency="True" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PlacementTarget="{Binding ElementName=MenuItemBorder}"
+                                   HorizontalOffset="1" VerticalOffset="-1">
+                                        <Border BorderThickness="0"  Background="#182533">
+                                            <ScrollViewer Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter Property="Background" Value="#b0b0b0"/>
+                                    <Setter Property="Foreground" Value="#182533"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
+
 
             <Style  TargetType="ListBoxItem"  x:Key="LB_BannedStrStyle">
                 <Style.Setters>
@@ -205,43 +225,75 @@
             <Style TargetType="MenuItem" x:Key="MenuItemSaveStyle">
                 <Setter Property="Background" Value="#242f3d"/>
                 <Setter Property="Foreground" Value="#b0b0b0"/>
-                <Setter Property="Header" Value="Save"/>
-                
-                <Style.Triggers>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type MenuItem}">
+                            <Border x:Name="MenuItemBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}">
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter  Content="Save" ContentSource="Header" 
+                                                       Margin="4, 2, 4, 2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    <CheckBox BorderThickness="0" Background="#b0b0b0" IsChecked="{TemplateBinding IsChecked}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Focusable="False">
+                                        
+                                    </CheckBox>
+                                    <Popup AllowsTransparency="True" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PlacementTarget="{Binding ElementName=MenuItemBorder}"
+                                   HorizontalOffset="1" VerticalOffset="-1">
+                                        <Border BorderThickness="0" Background="#182533">
+                                            <ScrollViewer Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=SaveNeeded, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="true">
+                                    <Setter Property="Header" Value="Save*"/>
+                                </DataTrigger>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter Property="Background" Value="#b0b0b0"/>
+                                    <Setter Property="Foreground" Value="#182533"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
 
-                    <DataTrigger Binding="{Binding Path=SaveNeeded, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="true"> 
-                        <Setter Property="Header" Value="Save*"/>
-                    </DataTrigger>
-
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="Background" Value="#879daf" />
-                        <Setter Property="Foreground" Value="#202b36"/>
-                    </Trigger>
-                    
-                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                        <Setter Property="Background" Value="#879daf" />
-                        <Setter Property="Foreground" Value="#202b36"/>
-                    </Trigger>
-
-                </Style.Triggers>
             </Style>
 
+            <Style TargetType="Menu" x:Key="menu">
+                <Setter Property="Foreground" Value="#b0b0b0"/>
+                <Setter Property="OverridesDefaultStyle" Value="True"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Menu}">
+                            <Border BorderThickness="0" Background="#182533">
+                                <StackPanel ClipToBounds="True"
+                                Orientation="Horizontal"
+                                IsItemsHost="True" />
+                            </Border>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
         </Grid.Resources>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="20"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0"
-              Background="#242f3d"
-              IsMainMenu="True">
-            
-            <MenuItem Header="File">
-                
+
+        <Menu Grid.Row="0" IsMainMenu="True"   BorderThickness="0" Style="{StaticResource menu}">
+            <MenuItem Header="File"  Width="50" BorderThickness="0">
                 <MenuItem Header="Open as"
                           x:Name="MenuItemOpenAs"
                           Click="MenuItemOpenAs_Click"
@@ -253,12 +305,12 @@
 
                 <MenuItem x:Name="MenuItemSave"
                           Click="MenuItemSave_Click"
-                          Style="{StaticResource MenuItemSaveStyle}"/>             
-                         
+                          Style="{StaticResource MenuItemSaveStyle}"/>
+
 
             </MenuItem>
 
-            
+
 
         </Menu>
 
@@ -279,9 +331,10 @@
                 <TextBlock Text="Enter word:"
                            VerticalAlignment="Center"
                            Grid.Column="0"
-                           Foreground="#b0b0b0"/>
+                           Foreground="#b0b0b0"
+                           Margin="4"/>
 
-             
+
 
                 <TextBox Grid.Column="1"
                          Margin="0,5,5,5"
@@ -303,7 +356,7 @@
                         IsEnabled="False"/>
 
             </Grid>
-            
+
             <Button Grid.Column="1"
                     Margin="3, 5"
                     Content="Delete"
@@ -334,7 +387,7 @@
                                     <Border BorderThickness="2" 
                                             BorderBrush="#b0b0b0"
                                             x:Name="Border">
-                                        
+
                                         <TextBlock Text="{Binding}"
                                                    Foreground="#b0b0b0"
                                                    FontSize="25"
@@ -346,13 +399,13 @@
                                             <Setter TargetName="Border" Property="Background" Value="#242f3d"></Setter>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
-                                    
- 
+
+
                                 </ControlTemplate>
                             </Setter.Value>
-                            
+
                         </Setter>
-                        
+
                     </Style.Setters>
                 </Style>
             </ListBox.ItemContainerStyle>
@@ -371,7 +424,7 @@
                            FontSize="10"/>
 
             </StatusBarItem>
-            
+
             <StatusBarItem>
                 <TextBlock x:Name="TB_CurrentPath"
                            Text="{Binding CurrentPath, UpdateSourceTrigger=PropertyChanged, TargetNullValue='Not opend'}"
