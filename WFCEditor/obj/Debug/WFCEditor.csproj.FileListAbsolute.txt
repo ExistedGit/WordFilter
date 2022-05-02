@@ -35,3 +35,20 @@ C:\Users\clash\My\Programming\Study\System\WordFilter\WFCEditor\obj\Debug\WFCEdi
 C:\Users\clash\My\Programming\Study\System\WordFilter\WFCEditor\obj\Debug\WFCEditor.csproj.CoreCompileInputs.cache
 C:\Users\clash\My\Programming\Study\System\WordFilter\WFCEditor\obj\Debug\WFCEditor.exe
 C:\Users\clash\My\Programming\Study\System\WordFilter\WFCEditor\obj\Debug\WFCEditor.pdb
+G:\VS Repo\WordFilter\WFCEditor\bin\Debug\WFCEditor.exe.config
+G:\VS Repo\WordFilter\WFCEditor\bin\Debug\WFCEditor.exe
+G:\VS Repo\WordFilter\WFCEditor\bin\Debug\WFCEditor.pdb
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor.csproj.AssemblyReference.cache
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\EditElementWindow.g.cs
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\MainWindow.g.cs
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\App.g.cs
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor_MarkupCompile.cache
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor_MarkupCompile.lref
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\EditElementWindow.baml
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\MainWindow.baml
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor.g.resources
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor.Properties.Resources.resources
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor.csproj.GenerateResource.cache
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor.csproj.CoreCompileInputs.cache
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor.exe
+G:\VS Repo\WordFilter\WFCEditor\obj\Debug\WFCEditor.pdb

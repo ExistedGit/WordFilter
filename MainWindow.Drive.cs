@@ -59,25 +59,27 @@ namespace WordFilter
                 try
                 {
                     File.Copy(report.FullPath, Path.Combine(dir.FullName, report.Name), true);
+
+
+                    using (StreamWriter writer = new StreamWriter(Path.Combine(dir.FullName, report.Name + " FIXED.txt")))
+                    {
+                        using (StreamReader reader = new StreamReader(report.FullPath))
+                        {
+                            string text = reader.ReadToEnd();
+                            foreach (var counter in report.WordOccurenceAttribute)
+                                text = Regex.Replace(text, $@"\b{counter.Word}\b", "*******");
+                            writer.Write(text);
+                        }
+                    }
+                    using (StreamWriter writer = new StreamWriter(Path.Combine(dir.FullName, report.Name + " REPORT.xml")))
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(FileReport));
+                        serializer.Serialize(writer, report);
+                    }
                 }
                 catch (Exception)
                 {
                     continue;
-                }
-                using(StreamWriter writer = new StreamWriter(Path.Combine(dir.FullName, report.Name + " FIXED.txt")))
-                {
-                    using (StreamReader reader = new StreamReader(report.FullPath))
-                    {
-                        string text = reader.ReadToEnd();
-                        foreach(var counter in report.WordOccurenceAttribute)
-                            text = Regex.Replace(text, $@"\b{counter.Word}\b", "*******");
-                        writer.Write(text);
-                    }
-                }
-                using (StreamWriter writer = new StreamWriter(Path.Combine(dir.FullName,report.Name + " REPORT.xml")))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(FileReport));
-                    serializer.Serialize(writer, report);
                 }
             }
         }
