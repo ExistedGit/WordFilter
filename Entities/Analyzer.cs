@@ -44,7 +44,7 @@ namespace WordFilter.Entities
         public int TotalFileCount
         {
             get => totalFileCount;
-            set
+            private set
             {
                 totalFileCount = value;
                 OnPropertyChanged();
@@ -54,7 +54,7 @@ namespace WordFilter.Entities
         public int AnalyzedFileCount
         {
             get => analyzedFileCount;
-            set
+            private set
             {
                 analyzedFileCount = value;
                 OnPropertyChanged();
@@ -71,7 +71,7 @@ namespace WordFilter.Entities
         public AnalyzerState State
         {
             get => state;
-            set
+            private set
             {
                 state = value;
                 OnPropertyChanged();
@@ -225,7 +225,7 @@ namespace WordFilter.Entities
             foreach (var catalog in Catalogs)
                 if (Directory.Exists(catalog))
                 {
-                    if (level <= 1)
+                    if (level <= 2)
                         subTasks.Add(Task.Factory.StartNew(() => AnalyzeDirectory(catalog, level + 1)));
                     else
                         AnalyzeDirectory(catalog, level + 1);
@@ -238,10 +238,16 @@ namespace WordFilter.Entities
 
             foreach (var bannedString in BannedStrings)
             {
-                using (StreamReader reader = new StreamReader(path))
+                try
                 {
-                    string text = reader.ReadToEnd().Trim();
-                    result.WordOccurences[bannedString] = Regex.Matches(text, $@"\b{bannedString}\b", RegexOptions.IgnoreCase).Count;
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        string text = reader.ReadToEnd().Trim();
+                        result.WordOccurences[bannedString] = Regex.Matches(text, $@"\b{bannedString}\b").Count;
+                    }
+                } catch(Exception)
+                {
+                    continue;
                 }
             }
             return result;

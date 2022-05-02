@@ -11,6 +11,7 @@ using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Management;
 using Microsoft.Win32;
+using System.Runtime.InteropServices;
 
 namespace WordFilter
 {
@@ -54,6 +55,7 @@ namespace WordFilter
                 OnPropertyChanged();
             }
         }
+
         public bool ReportFolderSelected
         {
             get => reportFolderSelected;
@@ -100,8 +102,13 @@ namespace WordFilter
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
 
-        private const bool DEBUG = false;
-
+        private const bool DEBUG = true;
+        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+        private static extern void SHChangeNotify(
+                                    int wEventId,
+                                    uint uFlags,
+                                    IntPtr dwItem1,
+                                    IntPtr dwItem2);
         public MainWindow()
         {
             InitializeComponent();
@@ -110,17 +117,20 @@ namespace WordFilter
 
             DataContext = this;
 
-            RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
+            RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WordFilter\\Command");
 
             if (rk == null)
             {
-                rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
+                rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WordFilter\\Command");
             }
-            if (rk.GetValue("Default") != null)
-                if ((string)rk.GetValue("Default") != $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" %1")
-                    rk.SetValue("Default", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" %1");
-
+            if (rk.GetValue("") != null)
+            {
+                if ((string)rk.GetValue("") != $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"")
+                    rk.SetValue("", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"");
+            } else
+                rk.SetValue("", $"\"{Path.Combine(Environment.CurrentDirectory, "WordFilter.exe")}\" \"%1\"");
             rk.Close();
+            SHChangeNotify(0x08000000, 0x0000, IntPtr.Zero, IntPtr.Zero);
         }
 
 
@@ -225,12 +235,14 @@ namespace WordFilter
 
         public void StopAllAnalyzersBTN(object sender, RoutedEventArgs e)
         {
+
             foreach (var a in Analyzers)
                 a.Stop();
         }
 
         public void PauseAllAnalyzers(object sender, RoutedEventArgs e)
         {
+
             foreach (var a in Analyzers)
                 a.Pause();
         }
