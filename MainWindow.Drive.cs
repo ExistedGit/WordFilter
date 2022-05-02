@@ -93,7 +93,7 @@ namespace WordFilter
             TotalFileCount += sender.TotalFileCount;
             if (Analyzers.Where(a => a.Ready).Count() == Analyzers.Count)
             {
-                AnalyzersLoaded = true;
+                FilesCounted = true;
                 SilentAllFilesCounted?.Invoke(this);
             }
         }
