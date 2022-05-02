@@ -35,7 +35,18 @@ namespace WFCEditor
             get
             {
                 if (NewElements.Count != OldElements.Count)
+                {
+                    MenuItemSave.IsChecked = false;
                     return true;
+                }
+
+                if(NewElements.Count == 0)
+                {
+                    MenuItemSave.IsChecked = true;
+                    return false;
+                }
+
+                   
 
                 for(int i = 0; i < NewElements.Count; i++)
                 {
@@ -50,9 +61,15 @@ namespace WFCEditor
                      
                     }
                     if (isNew)
+                    {
+                        MenuItemSave.IsChecked = false;
                         return true;
+                        
+                    }
+                        
 
                 }
+                MenuItemSave.IsChecked = true;
                 return false;
             }
         }
@@ -62,7 +79,7 @@ namespace WFCEditor
             set
             {
                 isOpendFromFile = value;
-                OnPropertyChanged("CanSave");
+                OnPropertyChanged("IsNeedSave");
             }
         }
         public string NewElement { get; set; }
@@ -82,7 +99,10 @@ namespace WFCEditor
 
         private void MenuItemSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            SaveAs();
+            if (NewElements.Count != 0)
+                SaveAs();
+            else
+                MessageBox.Show("Not have elements to save");
         }
 
         private void BTN_AddElement_Click(object sender, RoutedEventArgs e)
@@ -194,23 +214,30 @@ namespace WFCEditor
 
         }
 
-        private void Save()
+        private bool Save()
         {
-        
-            using (StreamWriter writer = new StreamWriter(CurrentOpendPath))
-                foreach (string s in NewElements)
-                    writer.WriteLine(s);
+            if(!isOpendFromFile || !isNeedSave)
+                return false;
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(CurrentOpendPath))
+                    foreach (string s in NewElements)
+                        writer.WriteLine(s);
+            }
+            catch(Exception) { return false; }
+         
 
             OldElements.Clear();
 
             foreach (string s in NewElements)
                 OldElements.Add(s);
 
-
+            return true;
 
         }
 
-        public void SaveAs()
+        public bool SaveAs()
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "WordFilter Config Files|*.wfc";
@@ -226,8 +253,12 @@ namespace WFCEditor
 
                     CurrentOpendPath = sfd.FileName;
                     isOpendFromFile = true;
+                    return true;
                 }
+
+
             }
+            else return false;
         }
 
         public void AddElement()
@@ -248,25 +279,30 @@ namespace WFCEditor
         {
             NewElements.Remove((string)LB_Elements.SelectedItem);
             OnPropertyChanged("isNeedSave");
+
+            if(LB_Elements.Items.Count > 0)
+                LB_Elements.SelectedIndex = LB_Elements.Items.Count-1;
         }
 
         private void MenuItemSave_Click(object sender, RoutedEventArgs e)
         {
-            if (isNeedSave)
-            {
-                Save();
-            }
-        }
 
-        private void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            if (isOpendFromFile)
+                Save();
+            else
+                SaveAs();
+           
         }
 
         private void TB_NewElement_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if(e.Key == System.Windows.Input.Key.Enter)
                 AddElement();
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
