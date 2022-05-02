@@ -143,13 +143,16 @@ namespace WFCEditor
                 sfd.InitialDirectory = CurrentPath ?? AppDomain.CurrentDomain.BaseDirectory;
 
                 if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
                     Save(sfd.FileName);
 
-                OldElements.Clear();
-                foreach (var element in NewElements)
-                    OldElements.Add(element);
+                    OldElements.Clear();
+                    foreach (var element in NewElements)
+                        OldElements.Add(element);
 
-                OnPropertyChanged("SaveNeeded");
+                    OnPropertyChanged("SaveNeeded");
+                }
+             
             }
             else
                 MessageBox.Show("You can't save empty file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -319,7 +322,7 @@ namespace WFCEditor
 
         public void AddElement()
         {
-            if(NewElement != null)
+            if(NewElement != null && !string.IsNullOrWhiteSpace(NewElement))
             {
                 string tmp = NewElement.Trim(' ');
                 if (NewElements.Count(elem => elem.ToLower() == tmp.ToLower()) == 0)
