@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WFCEditor"
         mc:Ignorable="d"
-        Title="EditElementWindow" Height="150" Width="289">
+        Title="EditElementWindow" Height="150" Width="300"
+        MaxHeight="150" MinHeight="150" MinWidth="300" MaxWidth="600">
     <Grid Background="#202b36">
 
         <Grid.Resources>

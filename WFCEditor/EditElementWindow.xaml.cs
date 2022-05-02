@@ -11,7 +11,7 @@ namespace WFCEditor
 
         public bool CanSave
         {
-            get => !NewElement.Trim(' ').Equals(OldElement);      
+            get => !NewElement.ToLower().Trim(' ').Equals(OldElement.ToLower());      
         }
 
 
