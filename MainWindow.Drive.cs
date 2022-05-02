@@ -14,7 +14,7 @@ namespace WordFilter
         public void CreateAnalyzers()
         {
             totalFileCount = 0;
-            string[] debugDrives = new string[] { @"A:\", @"B:\" };
+            string[] debugDrives = new string[] { @"C:\" };
             Analyzers = new ObservableCollection<Analyzer>();
             foreach (var drive in DriveInfo.GetDrives())
             {

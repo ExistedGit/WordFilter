@@ -10,6 +10,7 @@ using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Management;
+using Microsoft.Win32;
 
 namespace WordFilter
 {
@@ -53,7 +54,6 @@ namespace WordFilter
                 OnPropertyChanged();
             }
         }
-
         public bool ReportFolderSelected
         {
             get => reportFolderSelected;
@@ -100,7 +100,7 @@ namespace WordFilter
         private int analyzedFileCount;
         private ObservableCollection<string> bannedStrings;
 
-        private const bool DEBUG = true;
+        private const bool DEBUG = false;
 
         public MainWindow()
         {
@@ -225,14 +225,12 @@ namespace WordFilter
 
         public void StopAllAnalyzersBTN(object sender, RoutedEventArgs e)
         {
-
             foreach (var a in Analyzers)
                 a.Stop();
         }
 
         public void PauseAllAnalyzers(object sender, RoutedEventArgs e)
         {
-
             foreach (var a in Analyzers)
                 a.Pause();
         }

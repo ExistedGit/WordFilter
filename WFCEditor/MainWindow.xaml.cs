@@ -93,16 +93,42 @@ namespace WFCEditor
 
             string[] args = Environment.GetCommandLineArgs();
 
-            if(args.Length == 1)
+            if(args.Length == 2)
             {
 
-                if (File.Exists(args[0]) && Path.GetExtension(args[0]) == ".wfc")
+                if (File.Exists(args[1]) && Path.GetExtension(args[1]) == ".wfc")
                 {
-                    CurrentPath = args[0];
-                    OpenAs(args[0]);
+                    CurrentPath = args[1];
+                    foreach (string arg in OpenAs(args[1]))
+                    {
+                        OldElements.Add(arg);
+                        NewElements.Add(arg);
+                    }
+                        
                 }
-
             }
+
+
+            try
+            {
+                RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WFCEditor\\Command", true);
+
+                if (rk == null)
+                    rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open in WFCEditor\\Command", true);
+
+
+                if (rk.GetValue("") == null)
+                    rk.SetValue("", $"\"{args[0]}\" \"%1\"");
+                else
+                    if ((string)rk.GetValue("") != $"\"{args[0]}\" \"%1\"")
+                    rk.SetValue("", $"\"{args[0]}\" \"%1\"");
+
+
+                rk.Close();
+            }
+            catch (Exception) { }
+         
+
         }
 
         
