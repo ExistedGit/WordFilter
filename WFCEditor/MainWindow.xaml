@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WFCEditor"
         mc:Ignorable="d"
-        Title="WFCEditor" Height="407" Width="513">
+        Title="WFCEditor" Height="407" Width="513"
+        Closing="Window_Closing"
+        MaxWidth="700"
+        MinWidth="450"
+        MinHeight="200"      
+        >
     <Grid Background="#242f3d">
 
         <Grid.Resources>
@@ -314,7 +319,8 @@
                  Background="#17212b"
                  BorderThickness="0"
                  x:Name="LB_Elements"
-                 MouseDoubleClick="LB_Elemnts_MouseDoubleClick">
+                 MouseDoubleClick="LB_Elemnts_MouseDoubleClick"
+                 ScrollViewer.CanContentScroll="False">
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">

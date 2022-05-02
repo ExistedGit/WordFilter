@@ -91,8 +91,6 @@ namespace WFCEditor
             LB_Elements.ItemsSource = NewElements;
             DataContext = this;
 
-
-
             string[] args = Environment.GetCommandLineArgs();
 
             if(args.Length == 1)
@@ -105,27 +103,13 @@ namespace WFCEditor
                 }
 
             }
-                
-
-
-            //RegistryKey rk = Registry.ClassesRoot.OpenSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
-            
-            //if(rk == null)
-            //    rk = Registry.ClassesRoot.CreateSubKey("SystemFileAssociations\\.wfc\\Shell\\Open WFC file\\Command");
-
-
-            //if (rk.GetValue("Default") != null)
-            //    if ((string)rk.GetValue("Default") != $"\"{Application.Current}\" %1")
-            //        rk.SetValue("Default", $"\"{Application.Current}\" %1");
-
-            //rk.Close();
         }
 
         
 
         private void MenuItemSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            if (NewElements.Count != 0)
+            if (SaveNeeded)
             {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "WordFilter Config Files|*.wfc";
@@ -188,10 +172,10 @@ namespace WFCEditor
                 {
                     int index = NewElements.IndexOf(Element);
 
-                    if(index != -1 && NewElements.Count(NewElem => NewElem.ToLower().Contains(window.NewElement.ToLower()) == true) == 0)
+                    if(index != -1 && NewElements.Count(NewElem => NewElem.ToLower().Equals(window.NewElement.ToLower()) == true) == 0)
                     {
                         NewElements[index] = window.NewElement;
-                        OnPropertyChanged("isNeedSave");
+                        OnPropertyChanged("SaveNeeded");
                     }     
                     else
                         MessageBox.Show("This element already added", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -207,10 +191,15 @@ namespace WFCEditor
         private void MenuItemOpenAs_Click(object sender, RoutedEventArgs e)
         {
            
-            if(SaveNeeded &&
-               isOpenedFromFile &&
-               MessageBox.Show("You have not saved information. Save?", "info", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if(SaveNeeded &&  MessageBox.Show("You have not saved information. Save?", "info", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                if (isOpenedFromFile)
                     Save(CurrentPath);
+                else
+                    SaveAs();
+    
+            }
+                   
 
 
             OpenFileDialog ofd = new OpenFileDialog();
@@ -255,6 +244,34 @@ namespace WFCEditor
 
         }
 
+        public bool SaveAs()
+        {
+            if (SaveNeeded)
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "WordFilter Config Files|*.wfc";
+                sfd.Title = "Save WFC file as...";
+                sfd.InitialDirectory = CurrentPath ?? AppDomain.CurrentDomain.BaseDirectory;
+
+              
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    if(Save(sfd.FileName) == false)
+                        return false;
+                        
+
+                OldElements.Clear();
+
+                foreach (var element in NewElements)
+                    OldElements.Add(element);
+
+                OnPropertyChanged("SaveNeeded");
+                return true;
+            }
+            else
+                MessageBox.Show("You can't save empty file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
         public List<string> OpenAs(string FileName)
         {
             List<string> tmpList;
@@ -276,19 +293,23 @@ namespace WFCEditor
 
         public void AddElement()
         {
-            string tmp = NewElement.Trim(' ');
-            if (NewElements.Count(elem => elem.ToLower() == tmp.ToLower()) == 0)
+            if(NewElement != null)
             {
-                NewElements.Add(tmp);
-                TB_NewElement.Text = String.Empty;
-                OnPropertyChanged("SaveNeeded");
+                string tmp = NewElement.Trim(' ');
+                if (NewElements.Count(elem => elem.ToLower() == tmp.ToLower()) == 0)
+                {
+                    NewElements.Add(tmp);
+                    TB_NewElement.Text = String.Empty;
+                    OnPropertyChanged("SaveNeeded");
+                }
+                else
+                    MessageBox.Show("This element already added", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
-                MessageBox.Show("This element already added", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Invalid input", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
 
         }
-
-
 
         private void BTN_DeleteElement_Click(object sender, RoutedEventArgs e)
         {
@@ -343,6 +364,17 @@ namespace WFCEditor
         private void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (SaveNeeded && MessageBox.Show("You have not saved information. Save?", "info", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                if (isOpenedFromFile)
+                    Save(CurrentPath);
+                else
+                    SaveAs();
+            }
         }
     }
 }
