@@ -18,16 +18,16 @@ namespace WFCEditor
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private bool isOpenedFromFile;
-        private string curPath;
+        private string currPath;
 
         public ObservableCollection<string> OldElements { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> NewElements { get; set; } = new ObservableCollection<string>();
         public string CurrentPath
         {
-            get => curPath;
+            get => currPath;
             set
             {
-                curPath = value;
+                currPath = value;
                 OnPropertyChanged();
             }
         }
@@ -55,9 +55,7 @@ namespace WFCEditor
                     for (int j = 0; j < OldElements.Count; j++)
                     {
                         if (NewElements[i].ToLower().Equals(OldElements[j].ToLower()))
-                        {
-                            isNew = false;
-                        }        
+                            isNew = false;  
                      
                     }
                     if (isNew)
@@ -99,7 +97,7 @@ namespace WFCEditor
                 if (File.Exists(args[1]) && Path.GetExtension(args[1]) == ".wfc")
                 {
                     CurrentPath = args[1];
-                    foreach (string arg in OpenAs(args[1]))
+                    foreach (string arg in OpenWFCFile(args[1]))
                     {
                         OldElements.Add(arg);
                         NewElements.Add(arg);
@@ -121,7 +119,7 @@ namespace WFCEditor
                     rk.SetValue("", $"\"{args[0]}\" \"%1\"");
                 else
                     if ((string)rk.GetValue("") != $"\"{args[0]}\" \"%1\"")
-                    rk.SetValue("", $"\"{args[0]}\" \"%1\"");
+                        rk.SetValue("", $"\"{args[0]}\" \"%1\"");
 
 
                 rk.Close();
@@ -220,7 +218,7 @@ namespace WFCEditor
         private void MenuItemOpenAs_Click(object sender, RoutedEventArgs e)
         {
            
-            if(SaveNeeded &&  MessageBox.Show("You have not saved information. Save?", "info", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if(SaveNeeded &&  MessageBox.Show("You have not saved information. Save?", "info", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 if (isOpenedFromFile)
                     Save(CurrentPath);
@@ -245,7 +243,7 @@ namespace WFCEditor
                 }
                     
 
-                List<string> tmpList = OpenAs(ofd.FileName);
+                List<string> tmpList = OpenWFCFile(ofd.FileName);
 
                 CurrentPath = ofd.FileName;
                 isOpenedFromFile = true;
@@ -308,7 +306,7 @@ namespace WFCEditor
             return true;
         }
 
-        public List<string> OpenAs(string FileName)
+        public List<string> OpenWFCFile(string FileName)
         {
             List<string> tmpList;
 
@@ -321,10 +319,6 @@ namespace WFCEditor
             }catch(Exception) { return null; }
             
             return tmpList;
-
-
-
-
         }
 
         public void AddElement()
