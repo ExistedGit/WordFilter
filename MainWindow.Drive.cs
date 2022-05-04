@@ -14,15 +14,12 @@ namespace WordFilter
         public void CreateAnalyzers()
         {
             totalFileCount = 0;
-            string[] debugDrives = new string[] { @"C:\" };
             Analyzers = new ObservableCollection<Analyzer>();
             foreach (var drive in DriveInfo.GetDrives())
             {
                 
                 if (drive.IsReady)
                 {
-                    if (!debugDrives.Contains(drive.Name))
-                        continue;
                     var analyzer = new Analyzer(drive.RootDirectory.FullName);
                     if(BannedStrings!= null)
                         analyzer.SetBannedStrings(BannedStrings);
